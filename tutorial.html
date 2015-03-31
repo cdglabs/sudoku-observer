@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Engine Test</title>
+	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+	  function unhide(divID) {
+	    var item = document.getElementById(divID);
+	    if (item) {
+	      item.className=(item.className=='hidden')?'unhidden':'hidden';
+	    }
+	  }
+	</script>
+</head>
+<body style="background-image: url('../transparent.png')" onkeypress="engine.KeyPress(event)">
+	<canvas id="canvas"></canvas>
+	<script src="./play/lib/Mouse.js"></script>
+	<script src="kudoku.js"></script>
+	<script src="piece.js"></script>
+	<script src="square.js"></script>
+	<script src="puzzle.js"></script>
+	<script src="engine.js"></script>
+	<script>
+	var dimension = 9;
+	var tileSize = 50;
+	canvas.width = 1000;
+	canvas.height = (dimension+0.1) * tileSize;
+	engine = new Engine(dimension, tileSize, "sudoku", 500 - (dimension+1)*tileSize/2, 0);
+	engine.startTutorial = true;
+	window.IS_IN_SIGHT = true;
+	</script>
+	
+	<div id="buttons" class="hidden">
+		<div style="margin-left: 250px; display: table">
+			<div style="display: table-row">
+				<a id="solve" onclick="engine.SetSolution()" style="width: 150px; display: table-cell">Solve</a>
+				<a id="hint" onclick="engine.GiveHint()" style="width: 150px; display: table-cell">Hint</a>
+				<a id="reset" onclick="engine.Reset()" style="width: 150px; display: table-cell">Reset</a>
+			</div>
+		</div>
+	</div>
+	
+	<div id="phase1" class="unhidden">
+		<p>If a row, column, or region already has 8 squares filled, then the last square is easy.</p>
+	</div>
+	<div id="phase2" class="hidden">
+		<p>
+			You can't figure out the middle column just by looking at the middle column.</br>
+			A 4 or 6 could go in either square - but what do you see when you look elsewhere?
+		</p>
+	</div>
+	<div id="phase3" class="hidden">
+		<p>
+			Try the lower-right region, looking at the regions in the same 'region row' and 'region column'.</br>
+			Looking at the 2's in the lower-left and upper-right, where should the 2 in the lower right go?
+		</p>
+	</div>
+	<div id="phase0" class="hidden">
+		<p>
+			Good going! Now see if you can complete the whole puzzle.
+		</p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Engine Test</title>
+	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+	function unhide(divID) {
+	    var item = document.getElementById(divID);
+	    if (item) {
+	    	item.className=(item.className=='hidden')?'unhidden':'hidden';
+	    }
+	}
+	  
+	set1 = ['red', 'yellow', 'pink', 'green', 'purple', 'orange', 'blue', 'brown', 'black'];
+	
+	function SwitchSet() {
+		var imgArray = [];
+		if (!engine.useImages)
+			imgArray = set1;
+		else if (images["yay1"].attributes[0].nodeValue == "./img/" + set1[0] + ".png")
+			imgArray = set2;
+		else if (images["yay1"].attributes[0].nodeValue == "./img/" + set2[0] + ".png") {
+			engine.useImages = false;
+			return;
+		}
+		
+		for (var i = 0; i < 9; i++)
+			addAsset("yay" + (i+1).toString(), "./img/" + imgArray[i] + ".png");
+		engine.useImages = true;
+	}
+	</script>
+</head>
+<body style="background-image: url('../transparent.png')" onkeypress="engine.KeyPress(event)">
+	<canvas id="canvas"></canvas>
+	<script src="./play/lib/Mouse.js"></script>
+	<script src="kudoku.js"></script>
+	<script src="piece.js"></script>
+	<script src="square.js"></script>
+	<script src="puzzle.js"></script>
+	<script src="engine.js"></script>
+	<script>	
+	var dimension = 9;
+	var tileSize = 50;
+	canvas.width = 1000;
+	canvas.height = (dimension+0.1) * tileSize;
+	engine = new Engine(dimension, tileSize, "sudoku", 500 - (dimension+1)*tileSize/2, 0);
+	engine.Permute("751846239892371465643259871238197546974562318165438927319684752527913684486725193", 35);
+	SwitchSet();
+	window.IS_IN_SIGHT = true;
+	</script>
+	
+	<div id="buttons">
+		<div style="margin-left: 250px; display: table; text-align: center">
+			<div style="display: table-row">
+				<a id="solve" onclick="engine.SetSolution()" style="width: 150px; display: table-cell">Solve</a>
+				<a id="hint" onclick="engine.GiveHint()" style="width: 150px; display: table-cell">Hint</a>
+				<a id="reset" onclick="engine.Reset()" style="width: 150px; display: table-cell">Reset</a>
+			</div>
+		<div style="display: table-row">
+			<a style="width: 150px; display: table-cell"></a>
+			<a id="timer" onclick="engine.startTime = (new Date()).getTime()" style="width: 150px; display: table-cell">Start Timer</a>
+		</div>
+		</div>
+	</div>
+</body>
+</html>

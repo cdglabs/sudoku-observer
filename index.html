@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Scroll Test</title>
+	<script src="scroll.js"></script>
+	<script>
+	  function unhide(divID) {
+		    var item = document.getElementById(divID);
+		    if (item) {
+		      item.className='unhidden';
+		    }
+		  }
+	  
+		var iframes;
+		function LoadFrames() {
+			iframes = [
+		               document.getElementById('magic'),
+		               document.getElementById('latin'),
+		               document.getElementById('4x4'),
+		               document.getElementById('9x9'),
+		               document.getElementById('free'),
+		               document.getElementById('color'),
+		               document.getElementById('shapes'),
+		               document.getElementById('banner')
+		               ];
+			
+			if (iframes[0] === undefined || iframes[1] === undefined || iframes[2] === undefined
+					|| iframes[3] === undefined || iframes[4] === undefined || iframes[5] === undefined)
+				setTimeout('LoadFrames()', 100);
+		}
+		
+		function CheckIntersect() {
+			for (var i = 0; i < iframes.length; i++)
+				if (iframes[i] != undefined) {
+					var bounds = iframes[i].getBoundingClientRect();
+					if (bounds.left > window.innerWidth || bounds.right < 0
+							|| bounds.top > window.innerHeight || bounds.bottom < 0)
+						iframes[i].contentWindow.IS_IN_SIGHT = false;
+					else
+						iframes[i].contentWindow.IS_IN_SIGHT = true;
+				}
+			
+			setTimeout('CheckIntersect()', 100);
+		}
+		
+		var progress = 0;
+		var unhidden = 0;
+		function CheckProgress() {
+			for (var i = 4; i >= progress; i--)
+				if (iframes[i] != undefined && iframes[i].contentWindow.IS_COMPLETE) {
+					progress = i + 1;
+					break;
+				}
+			
+			switch (progress) {
+			case 5:
+			case 4:
+				if (unhidden >= 5)
+					break;
+				unhide('1to5');	unhide('2to5');	unhide('3to5');	unhide('4to5');
+			case 3:
+				if (unhidden >= 4)
+					break;
+				unhide('1to4');	unhide('2to4');	unhide('3to4');	unhide('5to4');
+			case 2:
+				if (unhidden >= 3)
+					break;
+				unhide('1to3');	unhide('2to3');	unhide('4to3');	unhide('5to3');
+			case 1:
+				if (unhidden >= 2)
+					break;
+				unhide('1to2');	unhide('3to2'); unhide('4to2');	unhide('5to2');
+			case 0:
+				if (unhidden >= 1)
+					break;
+				unhide('2to1');	unhide('3to1');	unhide('4to1');	unhide('5to1');
+			}
+			
+			unhidden = progress + 1;
+			setTimeout('CheckProgress()', 100);
+		}
+		
+		function JumpTo(id) {
+			var destination = document.getElementById(id).getBoundingClientRect();
+			var width = destination.right - destination.left;
+			var height = destination.bottom - destination.top;
+			startScroll(window.scrollX + destination.left - (window.innerWidth-width)/2,
+					window.scrollY + destination.top - (window.innerHeight-height)/2);
+		}
+	</script>
+	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+</head>
+<body style="height: 3840px; width: 6830px" onLoad="LoadFrames(); CheckIntersect(); CheckProgress()">
+	<div style="position: absolute; top: 2200px; left: 5150px" onMouseDown="JumpTo('magic')">
+		<div class="chapter">
+			<p>
+				Sudoku has its roots in magic squares, square grids filled by consecutive integers with</br>
+				the <i>magical</i> property that the sum of all the row, columns, and main diagonals are equal.
+			</p>
+	
+			<iframe id="magic" playable src="magic.html" width="1000" height="280" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+			
+			<p>
+				It may be hard, but you don't have to be a magician to solve this 3x3 magic square.</br>
+				Click once to drag and once again to drop.
+			</p>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="1to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="1to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="1to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+				<a class="hidden" id="1to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 100px; left: 500px" onMouseDown="JumpTo('latin')">
+		<div class="chapter"
+			onmouseover="document.getElementById('latin').focus()"
+			onmouseout="document.getElementById('latin').blur()"
+			onclick="document.getElementById('latin').focus()">
+			<p>
+				Fortunately, 18th century mathematician Leonard Euler devised a more straightforward scheme.</br>
+				No numbers involved, latin squares are also square grids with the <i>latin</i> property that all rows and columns</br>
+				had the same letters. In other words, no letter could appear twice in the same row or column.
+			</p>
+			
+			<iframe id="latin" playable src="latin.html" width="1000" height="240" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+			
+			<p>
+				Shapes are happy when they're in other shapes; get them inside the squares.</br>
+				Remember, no two in the same row or column. (Sorry, the cute shapes only live inside this box.)
+			</p>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="2to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="2to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="2to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+				<a class="hidden" id="2to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
+			</div>
+		</div>
+	</div>
+
+	<div style="position: absolute; top: 2750px; left: 2300px" onMouseDown="JumpTo('4x4')">
+		<div class="chapter" 
+			onmouseover="document.getElementById('4x4').focus()"
+			onmouseout="document.getElementById('4x4').blur()"
+			onclick="document.getElementById('4x4').focus()">
+			<p>		
+				Sudoku proper first materialized not in Japan but in a 1979 edition of Dell Pencil Puzzles</br>
+				and Word Games. Solvers had to place the numbers 1-9 on a 9x9 grid so that each row, column,</br>
+				and 3x3 box had no repetitions. For now we'll keep it simple (stupid?) with this 4x4.
+			</p>
+			
+			<iframe id="4x4" playable src="4x4.html" width="1000" height="240" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+			
+			<p>
+				You can hit a number key to quickly get the corresponding piece,</br>
+				and hit the r key over a set piece to quickly remove it.
+			</p>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="3to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="3to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="3to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+				<a class="hidden" id="3to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 500px; left: 3425px" onMouseDown="JumpTo('9x9')">
+		<div class="chapter" 
+			onmouseover="document.getElementById('9x9').focus()"
+			onmouseout="document.getElementById('9x9').blur()"
+			onclick="document.getElementById('9x9').focus()">
+			<p>
+				Here's a simple tutorial showing some of the basic ideas you should have when solving a sudoku puzzle.
+			</p>
+			
+			<iframe id="9x9" playable src="tutorial.html" width="1000" height="580" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="4to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="4to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="4to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="4to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 1750px; left: 3425px" onMouseDown="JumpTo('free')">
+		<div class="chapter" 
+			onmouseover="document.getElementById('free').focus()"
+			onmouseout="document.getElementById('free').blur()"
+			onclick="document.getElementById('free').focus()">
+			<p>
+				Try some more 9x9 puzzles. Hit new to generate a new puzzle.
+			</p>
+			
+			<iframe id="free" playable src="freeplay.html" width="1000" height="590" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="5to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="5to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="5to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 1500px; left: 100px" onMouseDown="JumpTo('color')">
+		<div class="chapter" 
+			onmouseover="document.getElementById('color').focus()"
+			onmouseout="document.getElementById('color').blur()"
+			onclick="document.getElementById('color').focus()">
+			<p>
+				Logic doesn't always equal numbers. Try thinking in colors.
+			</p>
+			
+			<iframe id="color" playable src="color.html" width="1000" height="540" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="5to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="5to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="5to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 1500px; left: 1200px" onMouseDown="JumpTo('shapes')">
+		<div class="chapter" 
+			onmouseover="document.getElementById('shapes').focus()"
+			onmouseout="document.getElementById('shapes').blur()"
+			onclick="document.getElementById('shapes').focus()">
+			<p>
+				Or perhaps you can think faster using shapes?
+			</p>
+			
+			<iframe id="shapes" playable src="shapes.html" width="1000" height="540" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
+		</div>
+		
+		<div style="margin-left: 225px; text-align: center; display: table">
+			<div style="display: table-row">
+				<a class="hidden" id="5to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
+				<a class="hidden" id="5to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
+				<a class="hidden" id="5to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
+				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
+			</div>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 2100px; left: 4550px; width: 375px; text-align: justify">
+		<p style="font-size: 30px">Jurors Caught Playing Sudoku During Trial</p>
+		<p>
+
+AFTER 105 witnesses and three months of evidence, a drug trial costing $1 million was aborted yesterday when it emerged that jurors had been playing Sudoku since the trial's second week.
+
+In the District Court in Sydney, Judge Peter Zahra discharged the jury after hearing evidence from two accused men, one of their solicitors and the jury forewoman, who admitted that she and four other jurors had been diverting themselves in the jury box by playing the popular numbers game.
+
+More than 20 police gave evidence in the case, in which the two accused faced a common charge of conspiracy to manufacture a commercial quantity of amphetamines. One faced further firearms and drug possession indictments. The prosecution and defence were due to deliver final addresses to the jury this week.
+
+But last week, as one of the accused was giving evidence, he saw the jury forewoman playing what he thought was Sudoku. His co-accused saw it too, and the defence counsel, Adam Morison and Michael Coroneos, made a joint application for a discharge.
+
+Yesterday Judge Zahra took unsworn evidence from the forewoman in which she confirmed the accused men's suspicions.
+
+She said four or five jurors had brought in the Sudoku sheets and photocopied them to play during the trial and then compare their results during meal breaks.
+
+She admitted to having spent more than half of her time in court playing the game. The trial, which started on March 4, has cost more than $1 million, including counsels' fees, staff wages and court running costs for 60 days of hearings. Judge Zahra, who had previously commended the jury for its apparent diligence, told the forewoman that the Sudoku players had let down their fellow jurors and all involved in the trial.
+
+Mr Morison said it was "extraordinary that 105 witnesses, including 20 police, had been in the witness box and not seen what was happening". He called on the NSW Sheriff's Office to update its guidelines to inform jurors that it was unacceptable to play games during a trial.
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 500px; left: 2300px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">The Hardest Sudoku Puzzle</p>
+		<p>
+
+The so-called "hardest" sudoku puzzle was published by Arto Inkala, a Finnish mathematician, on his website and is specifically designed to be unsolvable to all but the sharpest minds.
+
+On the difficulty scale by which most sudoku grids are graded, with one star signifying the simplist and five stars the hardest, this puzzle would score an eleven, he explained.
+
+Sudoku is a familiar challenge to newspaper readers and puzzle enthusiasts, requiring each vertical line, horizontal line and nine-square box to contain every number from one to nine.
+
+While that might sound simple, the particular difficulty in this version lies in the number of deductions you have to make in order to fill in a single number on the grid.
+
+Instead of being able to spot where a number goes based solely on the boxes that have already been filled in, most moves will face you with two or more spaces where a number could fit.
+
+Only one of these is correct, but to find it you must examine all possible options for your next move and perhaps the move after that, continuing in the same vein until all but one potential route results in a dead end.
+
+Mr Inkala said the most difficult parts of the grid require you to think ten moves ahead, exploring a series of permutations at each stage in order to eliminate all routes other than the right one.
+
+He added: "It is difficult to say if any one [puzzle] is the hardest or not, because I believe the hardest one is not yet discovered.
+
+"I am not sure if it is impossible to make, but there are so many possibilities to formulate that [I think] the most difficult one has not yet been found."
+
+		</p>
+		
+		<div class="chapter"
+			onmouseover="document.getElementById('hardest').focus()"
+			onmouseout="document.getElementById('hardest').blur()"
+			onclick="document.getElementById('hardest').focus()">
+			<p>
+				If there were a Solve button or a Hint button, then this wouldn't be the World's Hardest Puzzle!
+			</p>
+			
+			<iframe id="hardest" playable src="hardest.html" width="1000" height="520" scrolling="no" style="margin:0;display:block" embedded></iframe>
+		</div>
+	</div>
+	
+	<div style="position: absolute; top: 2500px; left: 100px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">The Minimum Sudoku</p>
+		<p>
+		
+In 2012 Gary McGuire <a href="http://www.math.ie/McGuire_V1.pdf">proved</a> that there needs to be at least 17 clues for a Sudoku puzzle to have a single solution.
+
+In other words, any puzzle with under 17 clues can be solved by two people who would get different but equally valid solutions.
+
+Puzzles with multiple solutions lose some of the appeal of single-soution puzzles; in the extreme case, what do you think it means to "solve" an empty sudoku grid?
+
+		</p>
+		
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/MlyTq-xVkQE" frameborder="0" allowfullscreen></iframe>
+	</div>
+	
+	<div style="position: absolute; top: 3500px; left: 2325px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">Sudoku as a Verification Code</p>
+		<p>
+		
+When images are transimitted over the network, they can be tampered with to erase or falsify information (for example, changing the printed charges on an invoice).
+
+The familiar defense is to use another image as a watermark, but a team of researchers came up with a way to authenticate images using a sudoku grid.
+
+They create a filled 4x4 sudoku grid, and then tile it to create a map of numbers the same size as the image.
+
+Each pixel value in the image is adjusted so that it (mod 4 + 1) equals the value in the corresponding box in the sudoku map, and then the image is sent.
+
+The receiver just has to tile the image they receive and make sure that the pixel values in each tile fit the rules of sudoku;
+
+if they don't, then they know that the image has been corrupted or tampered with over the network!
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 3000px; left: 5000px; width: 1300px; text-align: center">
+		<p style="font-size: 30px">My Life Is Sudoku</p>
+		<p>
+		
+Sometimes I wonder why I enjoy sudoku so much.<br><br>
+
+I love mind games, I love Sudoku.<br><br>
+
+No matter how hard the puzzle is, I can play you just as well, Suoku. We're so similar. I love playing games with people just as much as you. I love order, and you're so orderly. I love logic, and you're thinking is so clear to me. I love strategy, I'm envious of your challenges. I love numbers and patters, you give me just what I like.<br><br>
+
+There's so many qualities in you that I have found I admire in myself as well. You know how to get people addicted to you, so fixated on figuring you out, so interested to solve you, they all want to be the one to complete you.<br><br>
+
+You fit me, and I fit you. Just like the numbers placed so carefully planned in your 9x9 mind.<br><br>
+
+You're just like me, Sodoku. I'm just like you.<br><br>
+
+-<i>Anonymous, October 2013</i>
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 2750px; left: 3425px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">The "Sudoku Effect"</p>
+		<p>
+		
+One thing any avid sudoku player knows is how hard it is to rectify errors once they've been discovered; unfortunately, these kinds of errors pop up in real life.
+
+The ECTS system in Europe has allowed degree programs to be split into thematic modules.
+
+Theoretically students should be able to take different modules at different unviersities and be able to turn in the ECTS credits they've earned for each module for a degree.
+
+The problem is that the credit values for each module have to sum up to a certain number, like 180 for Bachelor's degrees.
+
+One university accidently offered the same course in two different modules (let's call them A and B), and students pursuing a certain degree had to take both modules.
+
+When students complained, planners removed the course from one module A, but now module A had 2 credits too little.
+
+They tried to compensate by making the course worth four points, so that module B had 2 extra credits to compensate.
+
+Sadly, this didn't solve the problem because students who were only required to take one of the two now ended up having 2 credits too much or too little; literally hundreds of man-hours were lost trying to figure out the solution.
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 200px; left: 3450px; width: 1000px; text-align: center">
+		<p>
+		
+My secret vice is Sudoku puzzles. Can't stop playing them. My parents are accountants. I blame them entirely.<br><br>
+
+-<i>Lisa Gardner</i>
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 1000px; left: 100px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">A Simple Algorithm To Solve Any 9x9 Sudoku Puzzle</p>
+		<p>
+		
+There exists only 6,670,903,752,021,072,936,960 number of valid, filled 9x9 sudoku grids.
+
+Therefore, to solve any puzzle all you have to do is start with one of the possible grids and check if the clues match up.
+
+If they do, then you have the solution, and if they don't, simply try another one. If you've checked all the grids without finding a match, then you know the puzzle doesn't have one.
+
+If you have a good computer that can check 1000 grids per second, then at most this would only take you 200 billion years!
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 1000px; left: 1200px; width: 1000px; text-align: justify">
+		<p style="font-size: 30px">A Better Algorithm To Solve Any 9x9 Sudoku Puzzle</p>
+		<p>
+		
+Programs will often use a "backtracking" algorithm to solve sudoku puzzles: empty squares are filled one by one with numbers which may or may not be correct.
+
+If at some point there's a contradiction, the program will backtrack by removing one or more of the numbers it had placed and trying different numbers instead.
+
+While this is incredibly tedious for humans, computers can do this amazingly quickly; the <a href="https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/">solver</a> this newspaper uses can solve most sudoku puzzles in a few milliseconds.
+
+On the other hand, humans want to avoid backtracking as much as possible. As stated, it's tedious, and also hard to do with pencil and paper.
+
+To this end we have a variety of strategies to determine the correct number for a single square, and generally we apply them in order from
+
+the simplest (like those shown in the tutorial) to the most complicated (e.g. <a href="http://www.sudokuwiki.org/X_Wing_Strategy">X-Wings</a> and its variant Swordfish)
+
+Only when all of these strategies have been exhausted do we resort to backtracking and guessing.
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 2000px; left: 2300px; width: 1000px; text-align: center">
+		<p>
+		
+It's not the puzzle's fault, but solving sudoku is always weird for me.<br>Shouldn't it be 0 to 8 instead of 1 to 9?<br><br>
+
+-<i>Anonymous Coder</i>
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 3250px; left: 500px; width: 1250px; text-align: justify">
+		<p style="font-size: 30px">Odds vs Evens</p>
+		<p>
+		
+The odd-even effect refers to the phonomenon that people tend to work with even numbers better than odd numbers.
+
+One hypothesis is that mentally representing odd numbers is simply more difficult than doing the same for evens.
+
+Researchers had previously tested this using tasks that involved "quantitative processing" (arithmetic, for example),
+
+but such experiments would only answer, "Is it harder to use odd numbers in numerical processing?", and not, "Is it harder to think about odd numbers in general?".
+
+So to test the hypothesis at its core, one group turned to Sudoku, which generally uses numbers but no arithmetic.
+
+Participants were given a puzzle that only used even numbers as its symbols and one that only used odd numbers.
+
+The odd-even effect showed up as participants did more accurately on the even puzzle than the odd puzzle, supporting the idea that a number like 13 is harder to think about than a number like 12.
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 2750px; left: 1200px; width: 1000px; text-align: center">
+		<p><i>
+		
+train is coming soon<br><br>
+enjoy a quick game and wait<br><br>
+train has passed me by<br><br>
+
+		</i></p>
+	</div>
+	
+	<div style="position: absolute; top: 500px; left: 5000px">
+		<div class="chapter"
+			onmouseover="document.getElementById('banner').focus()"
+			onmouseout="document.getElementById('banner').blur()"
+			onclick="document.getElementById('banner').focus()">
+		<br><br>
+			
+			<iframe id="banner" playable src="title.html" width="2000" height="1000" scrolling="no" style="margin:0;display:block" embedded></iframe>
+		</div>
+	</div>
+	
+</body>
+</html>

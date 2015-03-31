@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Engine Test</title>
+	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+	  function unhide(divID) {
+	    var item = document.getElementById(divID);
+	    if (item) {
+	      item.className=(item.className=='hidden')?'unhidden':'hidden';
+	    }
+	  }
+	</script>
+</head>
+
+<body style="background-image: url('../transparent.png')">
+	<canvas id="canvas"></canvas>
+	<script src="./play/lib/Mouse.js"></script>
+	<script src="kudoku.js"></script>
+	<script src="piece.js"></script>
+	<script src="square.js"></script>
+	<script src="puzzle.js"></script>
+	<script src="engine.js"></script>
+	<script>
+	var dimension = 3;
+	var tileSize = 50;
+	canvas.width = 1000;
+	canvas.height = (dimension+1) * tileSize;
+	engine = new Engine(dimension, tileSize, "magic", 500 - (dimension+2)*tileSize/2, 0);
+	window.IS_IN_SIGHT = true;
+	window.IS_COMPLETE = false;
+	</script>
+	
+	<div id="buttons" class="hidden">
+		<div style="margin-left: 455px; display: table">
+			<div style="display: table-row">
+				<a id="solve" onclick="engine.SetSolution()" style="width: 100px; display: table-cell">I Give Up!</a>
+			</div>
+		</div>
+	</div>
+	
+	<div id="hint" class="hidden">
+		<p>Hint: the numbers 1 through 9 sum up to 45. That means all the rows and columns have to be 45/3 = 15.</p>
+	</div>
+</body>
+</html>

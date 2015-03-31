@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Engine Test</title>
+	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+	  function unhide(divID) {
+	    var item = document.getElementById(divID);
+	    if (item) {
+	      item.className=(item.className=='hidden')?'unhidden':'hidden';
+	    }
+	  }
+	</script>
+</head>
+<body style="background-image: url('../transparent.png')" onkeypress="engine.KeyPress(event)">
+	<canvas id="canvas"></canvas>
+	<script src="./play/lib/Mouse.js"></script>
+	<script src="kudoku.js"></script>
+	<script src="piece.js"></script>
+	<script src="square.js"></script>
+	<script src="puzzle.js"></script>
+	<script src="engine.js"></script>
+	<script>
+	addAsset("yay1","./play/img/yay_triangle.png");
+	addAsset("meh1","./play/img/meh_triangle.png");
+	addAsset("sad1","./play/img/sad_triangle.png");
+	addAsset("yay2","./play/img/yay_square.png");
+	addAsset("meh2","./play/img/meh_square.png");
+	addAsset("sad2","./play/img/sad_square.png");
+	addAsset("yay3","./play/img/yay_pentagon.png");
+	addAsset("meh3","./play/img/meh_pentagon.png");
+	addAsset("sad3","./play/img/sad_pentagon.png");
+	
+	var dimension = 3;
+	var tileSize = 75;
+	canvas.width = 1000;
+	canvas.height = (dimension+0.1) * tileSize;
+	engine = new Engine(dimension, tileSize, "sudoku",  500 - (dimension+1)*tileSize/2, 0);
+	engine.useImages = true;
+	window.IS_IN_SIGHT = true;
+	</script>
+</body>
+</html>
