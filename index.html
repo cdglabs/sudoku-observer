@@ -92,8 +92,12 @@
 	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
 	<link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
-<body style="height: 3840px; width: 6830px" onLoad="LoadFrames(); CheckIntersect(); CheckProgress()">
-	<div style="position: absolute; top: 2200px; left: 5150px" onMouseDown="JumpTo('magic')">
+<body style="height: 2840px; width: 6830px" onLoad="LoadFrames(); CheckIntersect(); CheckProgress()">
+	<canvas id="canvas" style="position: fixed; top: 0px; left: 0px"></canvas>
+	<script src="./play/lib/Mouse.js"></script>
+	<script src="topengine.js"></script>
+	
+	<div style="position: absolute; top: 2606px; left: 1321px" onMouseDown="JumpTo('magic')">
 		<div class="chapter">
 			<p>
 				Sudoku has its roots in magic squares, square grids filled by consecutive integers with</br>
@@ -105,8 +109,9 @@
 			<p>
 				It may be hard, but you don't have to be a magician to solve this 3x3 magic square.</br>
 				Click once to drag and once again to drop.
+				When the square is complete, check below for a button leading to the next section.
 			</p>
-		</div>
+		
 		
 		<div style="margin-left: 225px; text-align: center; display: table">
 			<div style="display: table-row">
@@ -116,9 +121,10 @@
 				<a class="hidden" id="1to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
 			</div>
 		</div>
+		<br></div>
 	</div>
 	
-	<div style="position: absolute; top: 100px; left: 500px" onMouseDown="JumpTo('latin')">
+	<div style="position: absolute; top: 1648px; left: 3351px" onMouseDown="JumpTo('latin')">
 		<div class="chapter"
 			onmouseover="document.getElementById('latin').focus()"
 			onmouseout="document.getElementById('latin').blur()"
@@ -135,7 +141,7 @@
 				Shapes are happy when they're in other shapes; get them inside the squares.</br>
 				Remember, no two in the same row or column. (Sorry, the cute shapes only live inside this box.)
 			</p>
-		</div>
+		
 		
 		<div style="margin-left: 225px; text-align: center; display: table">
 			<div style="display: table-row">
@@ -145,9 +151,10 @@
 				<a class="hidden" id="2to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
 			</div>
 		</div>
+		<br></div>
 	</div>
 
-	<div style="position: absolute; top: 2750px; left: 2300px" onMouseDown="JumpTo('4x4')">
+	<div style="position: absolute; top: 352px; left: 3351px" onMouseDown="JumpTo('4x4')">
 		<div class="chapter" 
 			onmouseover="document.getElementById('4x4').focus()"
 			onmouseout="document.getElementById('4x4').blur()"
@@ -164,7 +171,7 @@
 				You can hit a number key to quickly get the corresponding piece,</br>
 				and hit the r key over a set piece to quickly remove it.
 			</p>
-		</div>
+		
 		
 		<div style="margin-left: 225px; text-align: center; display: table">
 			<div style="display: table-row">
@@ -174,9 +181,10 @@
 				<a class="hidden" id="3to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
 			</div>
 		</div>
+		<br></div>
 	</div>
 	
-	<div style="position: absolute; top: 500px; left: 3425px" onMouseDown="JumpTo('9x9')">
+	<div style="position: absolute; top: 848px; left: 5022px" onMouseDown="JumpTo('9x9')">
 		<div class="chapter" 
 			onmouseover="document.getElementById('9x9').focus()"
 			onmouseout="document.getElementById('9x9').blur()"
@@ -186,7 +194,7 @@
 			</p>
 			
 			<iframe id="9x9" playable src="tutorial.html" width="1000" height="580" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
-		</div>
+		
 		
 		<div style="margin-left: 225px; text-align: center; display: table">
 			<div style="display: table-row">
@@ -196,19 +204,23 @@
 				<a class="hidden" id="4to5" onMouseDown="JumpTo('free')" style="width: 150px; display: table-cell; text-align: center">Free Board</a>
 			</div>
 		</div>
+		<br></div>
 	</div>
 	
-	<div style="position: absolute; top: 1750px; left: 3425px" onMouseDown="JumpTo('free')">
+	<div style="position: absolute; top: 2432px; left: 5022px" onMouseDown="JumpTo('free')">
 		<div class="chapter" 
 			onmouseover="document.getElementById('free').focus()"
 			onmouseout="document.getElementById('free').blur()"
 			onclick="document.getElementById('free').focus()">
 			<p>
-				Try some more 9x9 puzzles. Hit new to generate a new puzzle.
+				Here you can play around with generating and solving 9x9 puzzles;
+				the slider below controls the number of hints given when you generate a new puzzle.
+				If you've reached this by following the guided introduction, this is the last section.
+				Scroll around to explore the rest of the page!
 			</p>
 			
 			<iframe id="free" playable src="freeplay.html" width="1000" height="590" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
-		</div>
+		
 		
 		<div style="margin-left: 225px; text-align: center; display: table">
 			<div style="display: table-row">
@@ -218,53 +230,49 @@
 				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
 			</div>
 		</div>
+		<br></div>
 	</div>
 	
-	<div style="position: absolute; top: 1500px; left: 100px" onMouseDown="JumpTo('color')">
+	<div style="position: absolute; top: 352px; left: 815px" onMouseDown="JumpTo('color')">
 		<div class="chapter" 
 			onmouseover="document.getElementById('color').focus()"
 			onmouseout="document.getElementById('color').blur()"
 			onclick="document.getElementById('color').focus()">
 			<p>
-				Logic doesn't always equal numbers. Try thinking in colors.
+				Sudoku doesn't use arithmetic at all, so we can get rid of the numbers. Try thinking with colors instead!
 			</p>
 			
 			<iframe id="color" playable src="color.html" width="1000" height="540" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
 		</div>
-		
-		<div style="margin-left: 225px; text-align: center; display: table">
-			<div style="display: table-row">
-				<a class="hidden" id="5to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
-				<a class="hidden" id="5to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
-				<a class="hidden" id="5to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
-				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
-			</div>
-		</div>
 	</div>
 	
-	<div style="position: absolute; top: 1500px; left: 1200px" onMouseDown="JumpTo('shapes')">
+	<div style="position: absolute; top: 352px; left: 1912px" onMouseDown="JumpTo('shapes')">
 		<div class="chapter" 
 			onmouseover="document.getElementById('shapes').focus()"
 			onmouseout="document.getElementById('shapes').blur()"
 			onclick="document.getElementById('shapes').focus()">
 			<p>
-				Or perhaps you can think faster using shapes?
+				Perhaps sudoku with colors is a little too weird. How about random shapes?
 			</p>
 			
 			<iframe id="shapes" playable src="shapes.html" width="1000" height="540" scrolling="no" style="margin:0 auto;display:block" embedded></iframe>
 		</div>
-		
-		<div style="margin-left: 225px; text-align: center; display: table">
-			<div style="display: table-row">
-				<a class="hidden" id="5to1" onMouseDown="JumpTo('magic')" style="width: 150px; display: table-cell; text-align: center">Magic Square</a>
-				<a class="hidden" id="5to2" onMouseDown="JumpTo('latin')" style="width: 150px; display: table-cell; text-align: center">Latin Square</a>
-				<a class="hidden" id="5to3" onMouseDown="JumpTo('4x4')" style="width: 150px; display: table-cell; text-align: center">Introduction</a>
-				<a class="hidden" id="5to4" onMouseDown="JumpTo('9x9')" style="width: 150px; display: table-cell; text-align: center">Tutorial</a>
-			</div>
-		</div>
 	</div>
 	
-	<div style="position: absolute; top: 2100px; left: 4550px; width: 375px; text-align: justify">
+	<div class="chapter" style="position: absolute; top: 1616px; left: 850px; width: 865px"
+		onmouseover="document.getElementById('hardest').focus()"
+		onmouseout="document.getElementById('hardest').blur()"
+		onclick="document.getElementById('hardest').focus()">
+		<p>
+			If there were a Solve button or a Hint button, then this wouldn't be the World's Hardest Puzzle!
+		</p>
+		
+		<iframe id="hardest" playable src="hardest.html" width="1000" height="520" scrolling="no" style="margin:0;display:block" embedded></iframe>
+	</div>
+	
+	<iframe style="position: absolute; top: 948px; left: 3616px" width="850" height="535" src="https://www.youtube.com/embed/MlyTq-xVkQE" frameborder="0" allowfullscreen></iframe>
+	
+	<div style="position: absolute; top: 1598px; left: 4525px; width: 375px; text-align: justify">
 		<p style="font-size: 30px">Jurors Caught Playing Sudoku During Trial</p>
 		<p>
 
@@ -287,11 +295,13 @@ Mr Morison said it was "extraordinary that 105 witnesses, including 20 police, h
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 500px; left: 2300px; width: 1000px; text-align: justify">
-		<p style="font-size: 30px">The Hardest Sudoku Puzzle</p>
-		<p>
+	<div style="position: absolute; top: 560px; left: 303px; width: 475px; text-align: justify">
+		<p style="font-size: 30px">The Most Difficult Sudoku?</p>
+		<p style="font-size: 30px">
 
-The so-called "hardest" sudoku puzzle was published by Arto Inkala, a Finnish mathematician, on his website and is specifically designed to be unsolvable to all but the sharpest minds.
+Those who find our number puzzles a bit of a doddle may wish to sharpen their pencils for the ultimate test: what is claimed to be the world's hardest sudoku.
+
+The Everest of numerical games was published by Arto Inkala, a Finnish mathematician, on his website and is specifically designed to be unsolvable to all but the sharpest minds.
 
 On the difficulty scale by which most sudoku grids are graded, with one star signifying the simplist and five stars the hardest, this puzzle would score an eleven, he explained.
 
@@ -307,42 +317,31 @@ Mr Inkala said the most difficult parts of the grid require you to think ten mov
 
 He added: "It is difficult to say if any one [puzzle] is the hardest or not, because I believe the hardest one is not yet discovered.
 
-"I am not sure if it is impossible to make, but there are so many possibilities to formulate that [I think] the most difficult one has not yet been found."
+"I am not sure if it is impossible to make, but there are so many possibilities to formulate that [I think] the most difficult one has not yet been found." 
 
 		</p>
-		
-		<div class="chapter"
-			onmouseover="document.getElementById('hardest').focus()"
-			onmouseout="document.getElementById('hardest').blur()"
-			onclick="document.getElementById('hardest').focus()">
-			<p>
-				If there were a Solve button or a Hint button, then this wouldn't be the World's Hardest Puzzle!
-			</p>
-			
-			<iframe id="hardest" playable src="hardest.html" width="1000" height="520" scrolling="no" style="margin:0;display:block" embedded></iframe>
-		</div>
 	</div>
 	
-	<div style="position: absolute; top: 2500px; left: 100px; width: 1000px; text-align: justify">
+	<div style="position: absolute; top: 868px; left: 4525px; width: 375px; text-align: justify">
 		<p style="font-size: 30px">The Minimum Sudoku</p>
-		<p>
+		<p style="font-size: 30px">
 		
-In 2012 Gary McGuire <a href="http://www.math.ie/McGuire_V1.pdf">proved</a> that there needs to be at least 17 clues for a Sudoku puzzle to have a single solution.
+In 2012 Gary McGuire proved that there needs to be at least 17 clues for a Sudoku puzzle to have a single solution.
 
-In other words, any puzzle with under 17 clues can be solved by two people who would get different but equally valid solutions.
+In other words, any puzzle with under 17 clues can be solved by two people who can get different but equally valid solutions.
 
-Puzzles with multiple solutions lose some of the appeal of single-soution puzzles; in the extreme case, what do you think it means to "solve" an empty sudoku grid?
+Puzzles with multiple solutions lose some of the appeal of single-soution puzzles; guessing is necessary at some point, which clashes how people generally believe a puzzle should be solved.
+
+In the extreme case, what do you think it means to solve an empty grid?
 
 		</p>
-		
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/MlyTq-xVkQE" frameborder="0" allowfullscreen></iframe>
 	</div>
 	
-	<div style="position: absolute; top: 3500px; left: 2325px; width: 1000px; text-align: justify">
+	<div style="position: absolute; top: 2100px; left: 5050px; width: 1000px; text-align: justify">
 		<p style="font-size: 30px">Sudoku as a Verification Code</p>
 		<p>
 		
-When images are transimitted over the network, they can be tampered with to erase or falsify information (for example, changing the printed charges on an invoice).
+When images are transimitted over a network, they can be tampered with to erase or falsify information (for example, changing the printed charges on an invoice).
 
 The familiar defense is to use another image as a watermark, but a team of researchers came up with a way to authenticate images using a sudoku grid.
 
@@ -357,11 +356,11 @@ if they don't, then they know that the image has been corrupted or tampered with
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 3000px; left: 5000px; width: 1300px; text-align: center">
+	<div style="position: absolute; top: 2656px; left: 2421px; width: 800px; text-align: center">
 		<p style="font-size: 30px">My Life Is Sudoku</p>
-		<p>
+		<p style="font-size: 18px">
 		
-Sometimes I wonder why I enjoy sudoku so much.<br><br>
+Sometimes I wonder why I enjoy sudoku so much.
 
 I love mind games, I love Sudoku.<br><br>
 
@@ -378,9 +377,9 @@ You're just like me, Sodoku. I'm just like you.<br><br>
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 2750px; left: 3425px; width: 1000px; text-align: justify">
+	<div style="position: absolute; top: 2287px; left: 3370px; width: 466px; text-align: justify">
 		<p style="font-size: 30px">The "Sudoku Effect"</p>
-		<p>
+		<p style="font-size: 30px">
 		
 One thing any avid sudoku player knows is how hard it is to rectify errors once they've been discovered; unfortunately, these kinds of errors pop up in real life.
 
@@ -394,15 +393,23 @@ One university accidently offered the same course in two different modules (let'
 
 When students complained, planners removed the course from one module A, but now module A had 2 credits too little.
 
-They tried to compensate by making the course worth four points, so that module B had 2 extra credits to compensate.
+They tried to compensate by making the course worth four points, so that module
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 2350px; left: 3901px; width: 466px; text-align: justify">
+		<p style="font-size: 30px">
+		
+B had 2 extra credits to compensate.
 
 Sadly, this didn't solve the problem because students who were only required to take one of the two now ended up having 2 credits too much or too little; literally hundreds of man-hours were lost trying to figure out the solution.
 
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 200px; left: 3450px; width: 1000px; text-align: center">
-		<p>
+	<div style="position: absolute; top: 2750px; left: 3921px; width: 448px; text-align: center">
+		<p style="font-size: 40px">
 		
 My secret vice is Sudoku puzzles. Can't stop playing them. My parents are accountants. I blame them entirely.<br><br>
 
@@ -411,11 +418,11 @@ My secret vice is Sudoku puzzles. Can't stop playing them. My parents are accoun
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 1000px; left: 100px; width: 1000px; text-align: justify">
-		<p style="font-size: 30px">A Simple Algorithm To Solve Any 9x9 Sudoku Puzzle</p>
+	<div style="position: absolute; top: 1816px; left: 1871px; width: 420px; text-align: justify">
+		<p style="font-size: 30px">Simple and Slow</p>
 		<p>
 		
-There exists only 6,670,903,752,021,072,936,960 number of valid, filled 9x9 sudoku grids.
+There exists only 6,670,903,752,021,072,936,960 valid, filled 9x9 sudoku grids.
 
 Therefore, to solve any puzzle all you have to do is start with one of the possible grids and check if the clues match up.
 
@@ -426,40 +433,38 @@ If you have a good computer that can check 1000 grids per second, then at most t
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 1000px; left: 1200px; width: 1000px; text-align: justify">
-		<p style="font-size: 30px">A Better Algorithm To Solve Any 9x9 Sudoku Puzzle</p>
+	<div style="position: absolute; top: 1816px; left: 2320px; width: 420px; text-align: justify">
+		<p style="font-size: 30px">Better and Faster</p>
 		<p>
 		
 Programs will often use a "backtracking" algorithm to solve sudoku puzzles: empty squares are filled one by one with numbers which may or may not be correct.
 
 If at some point there's a contradiction, the program will backtrack by removing one or more of the numbers it had placed and trying different numbers instead.
 
-While this is incredibly tedious for humans, computers can do this amazingly quickly; the <a href="https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/">solver</a> this newspaper uses can solve most sudoku puzzles in a few milliseconds.
+While this is incredibly tedious for humans, computers can do this amazingly quickly; the solver this newspaper uses can solve most sudoku puzzles in a few milliseconds.
 
-On the other hand, humans want to avoid backtracking as much as possible. As stated, it's tedious, and also hard to do with pencil and paper.
+On the other hand, humans
+
+		</p>
+	</div>
+	
+	<div style="position: absolute; top: 1886px; left: 2769px; width: 420px; text-align: justify">
+		<p>
+		
+want to avoid backtracking as much as possible. As stated, it's tedious, and also hard to do with pencil and paper.
 
 To this end we have a variety of strategies to determine the correct number for a single square, and generally we apply them in order from
 
-the simplest (like those shown in the tutorial) to the most complicated (e.g. <a href="http://www.sudokuwiki.org/X_Wing_Strategy">X-Wings</a> and its variant Swordfish)
+the simplest (like those shown in the tutorial) to the most complicated strategies like X-Wings and Swordfish.
 
 Only when all of these strategies have been exhausted do we resort to backtracking and guessing.
 
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 2000px; left: 2300px; width: 1000px; text-align: center">
-		<p>
-		
-It's not the puzzle's fault, but solving sudoku is always weird for me.<br>Shouldn't it be 0 to 8 instead of 1 to 9?<br><br>
-
--<i>Anonymous Coder</i>
-
-		</p>
-	</div>
-	
-	<div style="position: absolute; top: 3250px; left: 500px; width: 1250px; text-align: justify">
+	<div style="position: absolute; top: 2656px; left: 311px; width: 953px; text-align: justify">
 		<p style="font-size: 30px">Odds vs Evens</p>
-		<p>
+		<p style="font-size: 30px">
 		
 The odd-even effect refers to the phonomenon that people tend to work with even numbers better than odd numbers.
 
@@ -478,8 +483,8 @@ The odd-even effect showed up as participants did more accurately on the even pu
 		</p>
 	</div>
 	
-	<div style="position: absolute; top: 2750px; left: 1200px; width: 1000px; text-align: center">
-		<p><i>
+	<div style="position: absolute; top: 1777px; left: 5050px; width: 1000px; text-align: center">
+		<p style="font-size: 40px"><i>
 		
 train is coming soon<br><br>
 enjoy a quick game and wait<br><br>
@@ -488,16 +493,77 @@ train has passed me by<br><br>
 		</i></p>
 	</div>
 	
-	<div style="position: absolute; top: 500px; left: 5000px">
+	<div class="hidden" style="position: absolute; top: 100px; left: 5000px">
 		<div class="chapter"
 			onmouseover="document.getElementById('banner').focus()"
 			onmouseout="document.getElementById('banner').blur()"
 			onclick="document.getElementById('banner').focus()">
-		<br><br>
+		
+			<p>
+				Welcome to the Sudoku Observer! For a guided introduction to the world of sudoku, click <a onMouseDown="JumpTo('magic')">here</a> to get started.
+				Alternatively, if you already know a bit feel free to just scroll around and explore.
+			</p>
 			
-			<iframe id="banner" playable src="title.html" width="2000" height="1000" scrolling="no" style="margin:0;display:block" embedded></iframe>
+			<iframe id="banner" playable src="title.html" width="1000" height="540" scrolling="no" style="margin:0;display:block" embedded></iframe>
 		</div>
 	</div>
 	
+	<div style="position: absolute; top: 100px; left: 6460px; width: 325px; text-align: center; font-size: 30px; color: white">
+		<p>
+
+Miscellaneous Stuff<br><br>
+
+This playable page is by Elijah Agbayani with help from Hesam Samimi of CDG Labs.
+
+It's primarily inspired by the <a href="http://ncase.me/polygons/">Parable of The Polygons</a>, created by Vi Hart and Nicky Case,
+
+from whom we <s>stole</s> adapted much of the code behind the draggable pieces (and the cute shapes too).<br><br>
+
+		</p>
+		
+		<p>
+References/Related Info by Article<br><br>
+
+<hr>
+Algorithm To Solve Any Sudoku Puzzle<br><br>
+
+<a href="http://www.afjarvis.staff.shef.ac.uk/sudoku/sudoku.pdf">Proof</a> on the number of solutions<br><br>
+<a href="https://attractivechaos.github.io/plb/kudoku.html">Kudoku</a> and its <a href="https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/">performance</a><br><br>
+More advanced <a href="http://sudoku.com.au/sudokutips.aspx?Go=H3-1-1995">sudoku strategies</a><br><br>
+
+<hr>
+The Minimum Sudoku<br><br>
+
+<a href="http://www.math.ie/McGuire_V1.pdf">Proof</a> that 9x9 puzzles must have at least 17 clues to have a unique solution<br><br>
+<a href="http://sandwalk.blogspot.com/2007/06/i-knew-it-there-can-be-more-than-one.html">Example</a> of a puzzle with multiple solutions<br><br>
+
+<hr>
+Odds And Evens<br><br>
+
+<a href="http://www.jstor.org/stable/10.5406/amerjpsyc.124.3.0313">Original paper</a> (abstract only)<br><br>
+
+<hr>
+The Most Difficult Sudoku<br><br>
+
+Text adapted from this <a href="http://www.telegraph.co.uk/news/science/science-news/9359579/Worlds-hardest-sudoku-can-you-crack-it.html">article</a> from <i>The Telegraph</i><br><br>
+<a href="http://www.theguardian.com/media/2010/aug/22/worlds-hardest-sudoku">Previously the hardest puzzle</a><br><br>
+
+<hr>
+The "Sudoku Effect"<br><br>
+
+<a href="http://link.springer.com/chapter/10.1007/978-3-319-04087-5_6">Original paper</a> (abstract only)<br><br>
+Short <a href="http://ec.europa.eu/education/tools/ects_en.htm">background</a> on the ECTS credit system
+
+<hr>
+Sudoku As A verification Code<br><br>
+
+<a href="http://ieeexplore.ieee.org/xpl/login.jsp?reload=true&tp=&arnumber=5337415&url=http%3A%2F%2Fieeexplore.ieee.org%2Fstamp%2Fstamp.jsp%3Ftp%3D%26arnumber%3D5337415">Original paper</a> (abstract only)<br><br>
+
+<hr>
+Jurors Caught Playing Sudoku During Trial<br><br>
+
+Text adapted from this <a href="http://www.smh.com.au/news/national/jurors-get-1-million-trial-aborted/2008/06/10/1212863636766.html">article</a> from <i>The Sydney Morning Herald</i><br><br>
+
+	</div>
 </body>
 </html>

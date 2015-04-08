@@ -58,15 +58,17 @@ function Sudoku(dimension, x, y) {
 			for (var j = 0; j < self.dimension; j++)
 				self.regions[self.squares[i][j].region].push([i, j]);
 		
-		// Identify where to draw the region boundaries
-		for (var i = 1; i < self.dimension; i++)
-			for (var j = 0; j < self.dimension; j++)
-				if (self.squares[i-1][j].region != self.squares[i][j].region)
-					self.horizontals[i][j] = true;
-		for (var i = 0; i < self.dimension; i++)
-			for (var j = 1; j < self.dimension; j++)
-				if (self.squares[i][j-1].region != self.squares[i][j].region)
-					self.verticals[i][j] = true;
+		if (Math.floor(Math.sqrt(dimension)) == Math.sqrt(dimension)) {
+			// Identify where to draw the region boundaries
+			for (var i = 1; i < self.dimension; i++)
+				for (var j = 0; j < self.dimension; j++)
+					if (self.squares[i-1][j].region != self.squares[i][j].region)
+						self.horizontals[i][j] = true;
+			for (var i = 0; i < self.dimension; i++)
+				for (var j = 1; j < self.dimension; j++)
+					if (self.squares[i][j-1].region != self.squares[i][j].region)
+						self.verticals[i][j] = true;
+		}
 	};
 	
 	self.CheckConflict = function(r, c) {
@@ -229,6 +231,8 @@ function Sudoku(dimension, x, y) {
 		ctx.fillStyle = boldColor;
 		for (var k = 0; k < v.length; k++)
 			ctx.fillRect(v[k][1]*tileSize + x, v[k][0]*tileSize + y, tileSize/20, tileSize);
+		// Fill in the lower-right corner
+		ctx.fillRect(dimension*tileSize + x, dimension*tileSize + y, tileSize/20, tileSize/20);
 		
 		// Draw the squares, deciding whether or not to mask them
 		for (var i = 0; i < self.squares.length; i++)

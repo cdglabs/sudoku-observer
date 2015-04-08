@@ -21,7 +21,7 @@ function addAsset(name,src){
 	images[name].src = src;
 }
 
-var clicked = false;;
+var clicked = false;
 var clickLock = false;
 var draggedPiece = 0;
 var pickupX;
@@ -195,9 +195,9 @@ function Slider(x, y, length, dimension) {
 	self.Update = function(show) {
 		self.piece.Update(true);
 		if (self.piece.x < self.x)
-			self.piece.gotoX = self.x;
+			self.piece.x = self.x;
 		if (self.piece.x > self.x + length)
-			self.piece.gotoX = self.x + length;
+			self.piece.x = self.x + length;
 		var oldPercentage = self.percentage;
 		self.percentage = (self.piece.x - self.x) / length;
 		if (self.percentage != oldPercentage) {

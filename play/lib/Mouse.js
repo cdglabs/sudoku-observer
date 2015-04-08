@@ -17,7 +17,7 @@
 	},false);
 
 	document.body.addEventListener("mouseup",function(event){
-	    // Mouse.pressed = false;
+	    Mouse.pressed = false;
 	},false);
 
 	document.body.addEventListener("mousemove",onMouseMove = function(event){
@@ -32,7 +32,7 @@
 	},false);
 
 	document.body.addEventListener("touchend",function(event){
-	    // Mouse.pressed = false;
+	    Mouse.pressed = false;
 	},false);
 
 	document.body.addEventListener("touchmove",onTouchMove = function(event){
