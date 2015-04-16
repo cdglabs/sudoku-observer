@@ -1,0 +1,23 @@
+<html>
+  <title></title>
+  <head>
+    <link href="index.css" rel="stylesheet"></link>
+  </head>
+  </style>
+<body>
+  <hd>Sudoku Observer</hd>
+  <br>
+  <a id="date">date</a>
+  <hr>
+    <script>
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    var date = new Date()
+    var day = date.getDate()
+    var dayOfWeek = date.getDay()
+    var monthIndex = date.getMonth()
+    var year = date.getFullYear()
+    document.getElementById("date").innerText = weekday[dayOfWeek] + ", " + monthNames[monthIndex] + " " + day + ", " + year
+    </script>
+</body>
+</html>
