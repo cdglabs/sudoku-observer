@@ -1,6 +1,6 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var font = "lighter 20px Nunito";
+var font = "20px Domine";
 var fontHeight = 15;
 var normalColor = "#0000FF";
 var conflictColor = "#FF0000";
@@ -57,9 +57,10 @@ function Piece(num, isHint, x, y) {
 			if (!self.dragged) {
 				// Make sure nothing else is already being dragged
 		        if (!engine.pieceDragged) {
-					var dx = Mouse.x - self.x + (tileSize-self.width)/2;
-					var dy = Mouse.y - self.y + (tileSize+fontHeight)/2;
-					if(dx > 0 && dx < tileSize && dy > 0 && dy < tileSize && self.num != 0) {
+					var square = self.isSliding ? engine.GetSliding(Mouse.x, Mouse.y) : engine.GetSquare(Mouse.x, Mouse.y);
+					var pool = self.inPuzzle ? undefined : engine.GetPool(Mouse.x, Mouse.y);
+					if(((square != undefined && square.piece == self)
+							|| (pool != undefined && pool.stock[0] == self)) && self.num != 0) {
 						pickupX = Mouse.x;
 						pickupY = Mouse.y;
 						self.dragged = true;
@@ -80,8 +81,9 @@ function Piece(num, isHint, x, y) {
 				if (pickupSquare != undefined && dropSquare != undefined) {
 					if (dropSquare.piece.isHint)
 						dropSquare = pickupSquare;
+					var temp = pickupSquare.piece;
 					pickupSquare.piece = dropSquare.piece;
-					dropSquare.piece = self;
+					dropSquare.piece = temp;
 				}
 				
 				// In -> Out
@@ -107,7 +109,7 @@ function Piece(num, isHint, x, y) {
 		
 		// Follow the mouse
 		if (self.dragged) {
-			self.gotoX = Mouse.x - textOffset;
+			self.gotoX = Mouse.x;
 			if (!self.isSliding)
 				self.gotoY = Mouse.y;
 		}
@@ -121,8 +123,30 @@ function Piece(num, isHint, x, y) {
 		if (self.num == 0)
 			return;
 		
+		ctx.save();
+		ctx.translate(self.x, self.y);
+		
+		// Rotate if conflicting
+		if(self.isConflicting){
+			self.frame+=0.07;
+			ctx.translate(0,20);
+			ctx.rotate(Math.sin(self.frame-(self.x+self.y)/200)*Math.PI*0.05);
+			ctx.translate(0,-20);
+		}
+		
+		// Dangle if dragged
+		if(self.dragged){
+			self.dangle += (lastMouseX-Mouse.x)/100;
+			ctx.translate(5,0);
+			ctx.rotate(-self.dangle);
+			ctx.translate(-5,0);
+			self.dangleVel += self.dangle*(-0.02);
+			self.dangle += self.dangleVel;
+			self.dangle *= 0.9;
+		}
+		
 		// Select color if using text
-		if (!engine.useImages && !self.isSliding) {
+		if (!engine.useImages && !self.isSliding) {		
 			if (self.dragged)
 				ctx.fillStyle = selectColor;
 			else if (!self.inPuzzle)
@@ -134,32 +158,44 @@ function Piece(num, isHint, x, y) {
 			else
 				ctx.fillStyle = normalColor;
 			
-			ctx.fillText(self.text, x, y);
+			if (engine.useLetters) {
+				var letter = '';
+				switch (self.num) {
+				case 1:
+					letter = 's';
+					break;
+				case 2:
+					letter = 'u';
+					break;
+				case 3:
+					letter = 'd';
+					break;
+				case 4:
+					letter = 'o';
+					break;
+				case 5:
+					letter = 'd';
+					break;
+				case 6:
+					letter = 'b';
+					break;
+				case 7:
+					letter = 'e';
+					break;
+				case 8:
+					letter = 'r';
+					break;
+				case 9:
+					letter = 'v';
+					break;
+				}
+				ctx.fillText(letter, 0, 0);
+			}
+			else
+				ctx.fillText(self.text, 0, 0);
 		}
 		
 		else {
-			ctx.save();
-			ctx.translate(self.x, self.y);
-			
-			// Rotate if conflicting
-			if(self.isConflicting){
-				self.frame+=0.07;
-				ctx.translate(0,20);
-				ctx.rotate(Math.sin(self.frame-(self.x+self.y)/200)*Math.PI*0.05);
-				ctx.translate(0,-20);
-			}
-			
-			// Dangle if dragged
-			if(self.dragged){
-				self.dangle += (lastMouseX-Mouse.x)/100;
-				ctx.translate(5,0);
-				ctx.rotate(-self.dangle);
-				ctx.translate(-5,0);
-				self.dangleVel += self.dangle*(-0.02);
-				self.dangle += self.dangleVel;
-				self.dangle *= 0.9;
-			}
-			
 			var id = "";
 			if (!self.inPuzzle)
 				id += "meh";
@@ -174,8 +210,9 @@ function Piece(num, isHint, x, y) {
 			
 			ctx.drawImage(self.image, tileSize/6 - (tileSize-self.width)/2,
 					tileSize/6 - (tileSize+fontHeight)/2, tileSize*2/3, tileSize*2/3);
-			ctx.restore();
 		}
+		
+		ctx.restore();
 	};
 }
 

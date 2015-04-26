@@ -3,7 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Engine Test</title>
-	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Domine' rel='stylesheet' type='text/css'>
 	<link href="css/index.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
 	  function unhide(divID) {
@@ -35,7 +35,7 @@
 </head>
 <body style="background-image: url('../transparent.png')" onkeypress="engine.KeyPress(event)">
 	<canvas id="canvas"></canvas>
-	<script src="./play/lib/Mouse.js"></script>
+	<script src="./js/Mouse.js"></script>
 	<script src="kudoku.js"></script>
 	<script src="piece.js"></script>
 	<script src="square.js"></script>
@@ -64,17 +64,19 @@
        	"174835962293476158586192734957324816428961375361758249812547693635219487749683521",
        	"869571324327849516145623987952368741681497235473215869514982673798136452236754198"
        	];
+	
 	var dimension = 9;
 	var tileSize = 50;
-	canvas.width = 1000;
+	canvas.width = (dimension+1.1) * tileSize;
 	canvas.height = (dimension+1.1) * tileSize;
-	engine = new Engine(dimension, tileSize, "sudoku", 500 - (dimension+1)*tileSize/2, 0);
+	engine = new Engine(dimension, tileSize, "sudoku", 0, 0);
 	engine.Permute(twentyPuzzles[Math.floor(Math.random()*20)], 45);
 	engine.InitializeSlider();
 	window.IS_IN_SIGHT = true;
+	window.IS_COMPLETE = false;
 	</script>
 	
-	<div style="margin-left: 250px; text-align: center; display: table">
+	<div style="margin-left: 275px; text-align: center; display: table">
 		<div style="display: table-row">
 			<a id="solve" onclick="engine.SetSolution()" style="width: 150px; display: table-cell">Solve</a>
 			<a id="hint" onclick="engine.GiveHint()" style="width: 150px; display: table-cell">Hint</a>

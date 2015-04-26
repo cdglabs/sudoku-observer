@@ -3,11 +3,12 @@ body{
 	margin:0;
 	background-image: url('../paper3.jpg');
 	
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Domine', serif;
 	color: #333333;
 	font-size: 20px;
 	font-weight: 100;
 	line-height: 30px;
+	text-align: center;
 
 	min-width:1040px;
 	
@@ -43,17 +44,17 @@ a:hover{
 	border: none;
 }
 
+.blur{
+	background-color: rgba(16, 16, 16, .64);
+	position: absolute;
+	transition: opacity 0.5s;
+}
+
 .chapter{
 	margin: 50px auto;
 	width: 1000px;
-	border: 1px solid #BBBBBB;
 	padding: 0px 25px;
 	text-align: center;
-	transition: border 0.3s;
-}
-
-.chapter:hover{
-	border: 1px solid #000000
 }
 
 .hidden{ display: none; }
@@ -61,25 +62,18 @@ a:hover{
 a.hidden{ visibility: hidden; }
 a.unhidden{ visibility: visible; }
 
-.playable{
-	width: 100%;
-	background: #222;
-	overflow: hidden;
+.navigator{
+	opacity: 0.33;
+	transition: opacity 0.5s;
 }
-.playable > #play_title{
-	color: #fff;
-	margin-top: 30px;
-	text-align: center;
+
+.navigator:hover{
+	opacity: 1.0;
 }
-.playable iframe{
-	display: block;
-	margin: 25px auto;
-	border: none;
-}
-iframe[embedded]{
+
+iframe {
 	overflow: hidden;
 	border: none;
-	margin:40px;
 }
 
 #references{

@@ -17,11 +17,11 @@
 	},false);
 
 	document.body.addEventListener("mouseup",function(event){
-	    Mouse.pressed = false;
+	    // Mouse.pressed = false;
 	},false);
 
 	document.body.addEventListener("mousemove",onMouseMove = function(event){
-		Mouse.x = event.pageX;
+		Mouse.x = event.pageX - canvas.offsetLeft;
 		Mouse.y = event.pageY - window.pageYOffset;
 
 	},false);
@@ -32,7 +32,7 @@
 	},false);
 
 	document.body.addEventListener("touchend",function(event){
-	    Mouse.pressed = false;
+	    // Mouse.pressed = false;
 	},false);
 
 	document.body.addEventListener("touchmove",onTouchMove = function(event){

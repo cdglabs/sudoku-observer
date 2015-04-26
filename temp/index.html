@@ -1,23 +1,39 @@
 <html>
   <title></title>
   <head>
+ 	<link href='http://fonts.googleapis.com/css?family=Domine' rel='stylesheet' type='text/css'>
     <link href="index.css" rel="stylesheet"></link>
+    <script>
+    function init() {
+	    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+	    var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	    var date = new Date()
+	    var day = date.getDate()
+	    var dayOfWeek = date.getDay()
+	    var monthIndex = date.getMonth()
+	    var year = date.getFullYear()
+	    document.getElementById("date").innerHTML = weekday[dayOfWeek] + ", " + monthNames[monthIndex] + " " + day + ", " + year
+	    
+	  	var weatherReq = new XMLHttpRequest();
+	  	weatherReq.onreadystatechange = function() {
+	  		if (weatherReq.readyState == 4 && weatherReq.status == 200) {
+	  			var weatherData = JSON.parse(weatherReq.responseText);
+	  			document.getElementById("weather").innerHTML = weatherData.name + ": " + Math.round(weatherData.main.temp).toString()
+	  				+ " &ordmF, " + weatherData.weather[0].description;
+	  		}
+	  	}
+	  	weatherReq.open("GET", "http://api.openweathermap.org/data/2.5/weather?id=5368361&units=imperial&APPID=ed983b84a08037619de69f26990568e5", true);
+	  	weatherReq.send();
+    }
+    </script>
   </head>
   </style>
-<body>
+<body onload="init()">
   <hd>Sudoku Observer</hd>
   <br>
   <a id="date">date</a>
+  <br>
+  <a id="weather">weather</a>
   <hr>
-    <script>
-    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    var date = new Date()
-    var day = date.getDate()
-    var dayOfWeek = date.getDay()
-    var monthIndex = date.getMonth()
-    var year = date.getFullYear()
-    document.getElementById("date").innerText = weekday[dayOfWeek] + ", " + monthNames[monthIndex] + " " + day + ", " + year
-    </script>
 </body>
 </html>

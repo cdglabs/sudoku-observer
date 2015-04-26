@@ -3,38 +3,12 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Engine Test</title>
-	<link href='https://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Domine' rel='stylesheet' type='text/css'>
 	<link href="css/index.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript">
-	function unhide(divID) {
-	    var item = document.getElementById(divID);
-	    if (item) {
-	    	item.className=(item.className=='hidden')?'unhidden':'hidden';
-	    }
-	}
-	
-	set1 = ['S', 'U', 'D', 'O', 'K', 'B', 'E', 'R', 'V'];
-	
-	function SwitchSet() {
-		var imgArray = [];
-		if (!engine.useImages)
-			imgArray = set1;
-		else if (images["yay1"].attributes[0].nodeValue == "./img/" + set1[0] + ".png")
-			imgArray = set2;
-		else if (images["yay1"].attributes[0].nodeValue == "./img/" + set2[0] + ".png") {
-			engine.useImages = false;
-			return;
-		}
-		
-		for (var i = 0; i < 9; i++)
-			addAsset("yay" + (i+1).toString(), "./img/" + imgArray[i] + ".png");
-		engine.useImages = true;
-	}
-	</script>
 </head>
-<body style="background-image: url('../transparent.png')" onkeypress="engine.KeyPress(event)">
+<body style="background-image: url('../transparent.png'); width: 100px" onkeypress="engine.KeyPress(event)">
 	<canvas id="canvas"></canvas>
-	<script src="./play/lib/Mouse.js"></script>
+	<script src="./js/Mouse.js"></script>
 	<script src="kudoku.js"></script>
 	<script src="piece.js"></script>
 	<script src="square.js"></script>
@@ -43,9 +17,9 @@
 	<script>	
 	var dimension = 9;
 	var tileSize = 50;
-	canvas.width = 1000;
+	canvas.width = (dimension+1.1) * tileSize;
 	canvas.height = (dimension+0.1) * tileSize;
-	engine = new Engine(dimension, tileSize, "sudoku", 500 - (dimension+1)*tileSize/2, 0);
+	engine = new Engine(dimension, tileSize, "sudoku", 0, 0);
 	engine.LoadConfiguration(".......9.45.7.2..61.263.4..2.53.4.8..1....532.7....6.9.461789..8..9.3764.9....8..");
 	
 	var squares = engine.puzzle.squares;
@@ -73,7 +47,7 @@
 	squares[7][8].piece.isHint = false;
 	squares[8][1].piece.isHint = false;
 	
-	SwitchSet();
+	engine.useLetters = true;
 	window.IS_IN_SIGHT = true;
 	</script>
 

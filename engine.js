@@ -46,6 +46,7 @@ function Engine(dimension, tileSize, mode, x, y) {
 	self.y = y;
 	self.pieceDragged = false;
 	self.useImages = false;
+	self.useLetters = false;
 	self.mode = mode;
 	self.numPool = [];
 	self.blur = new Object();
@@ -311,11 +312,14 @@ function Engine(dimension, tileSize, mode, x, y) {
 	};
 	
 	self.GetSquare = function(x, y) {
+		var relativeX = x - self.puzzle.x;
+		var relativeY = y - self.puzzle.y;
+	
 		// Determine the index in the squares array
-		var ix = Math.floor((x-self.puzzle.x) / tileSize);
+		var ix = Math.floor(relativeX / tileSize);
 		if (mode == "magic")
 			ix -= 1;
-		var iy = Math.floor((y-self.puzzle.y) / tileSize);
+		var iy = Math.floor(relativeY / tileSize);
 		
 		// Give undefined if the square is being hidden
 		if (mode == "sudoku") {
@@ -329,6 +333,31 @@ function Engine(dimension, tileSize, mode, x, y) {
 		
 		if (ix >= 0 && ix < dimension && iy >= 0 && iy < dimension)
 			return self.puzzle.squares[iy][ix];
+		else
+			return undefined;
+	};
+	
+	self.GetPool = function(x, y) {
+		var relativeX = x - self.puzzle.x;
+		var relativeY = y - self.puzzle.y;
+	
+		// Determine the index in the squares array
+		var ix = Math.floor(relativeX / tileSize);
+		var iy = Math.floor(relativeY / tileSize);
+		
+		if (ix >= dimension && ix < dimension+1 && iy >= 0 && iy < dimension)
+			return self.numPool[iy];
+		else
+			return undefined;
+	};
+	
+	self.GetSliding = function(x, y) {
+		var relativeX = x - self.puzzle.x;
+		var relativeY = y - self.puzzle.y;
+		
+		if (self.slider != undefined && relativeX > self.slider.x && relativeX < self.slider.x + self.slider.length
+				&& relativeY > self.slider.y - tileSize/4 && relativeY < self.slider.y + tileSize/4)
+			return self.slider;
 		else
 			return undefined;
 	};
@@ -349,6 +378,12 @@ function Engine(dimension, tileSize, mode, x, y) {
 	};
 	
 	self.KeyPress = function(event) {
+		var arrow = event.keyCode;
+		if (arrow >= 37 && arrow <= 40) {
+			window.ARROW_EVENT = event;
+			return;
+		}
+		
 		var index = event.charCode - 49;
 		if (((index < 0 || index >= dimension) && index != 65) || engine.pieceDragged ||
 				(index >= 0 && index <= 8 && self.numPool[index].stock.length == 0))
@@ -615,9 +650,7 @@ function render() {
 		justDropped = false;
 		if (engine.mode == "magic" && movesUntilSolve > 0) {
 			--movesUntilSolve;
-			if (movesUntilSolve == 6)
-				unhide("hint");
-			else if (movesUntilSolve == 0)
+			if (movesUntilSolve == 0)
 				unhide("buttons");
 		}
 		engine.puzzle.CheckSolved();
