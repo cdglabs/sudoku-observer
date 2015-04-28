@@ -292,7 +292,7 @@ function CheckFrames() {
 		canvas.height = shapeySize;
 	}
 	canvas.text = curDiv;
-	if (checkTime && ((new Date()).getTime() - loadTime) / 1000 < 10)
+	if (checkTime && ((new Date()).getTime() - loadTime) / 1000 < 15)
 		canvas.text = "intro";
 	else
 		checkTime = false;

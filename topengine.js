@@ -21,7 +21,7 @@ function getMessage(divID) {
 	if (divID == "intro")
 		return "Hover the mouse over me to see what I have to say!";
 	else if (divID == "headerDiv")
-		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer ." +
+		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer. " +
 				"You can click the arrows on the edge to navigate, or use the arrow keys instead. ";
 	else if (divID == "titleDiv")
 		return "For today's puzzle, instead of numbers we have all the letters in our newspaper's name! " +
