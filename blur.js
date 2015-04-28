@@ -206,6 +206,10 @@ var latinComplete = false;
 var fourComplete = false;
 var tutComplete = false;
 var freeComplete = false;
+
+var loadTime = (new Date()).getTime();
+var checkTime = true;
+
 function CheckFrames() {
 	if (!freeComplete && iframes[5].contentWindow.IS_COMPLETE) {
 		init_complete();
@@ -288,6 +292,11 @@ function CheckFrames() {
 		canvas.height = shapeySize;
 	}
 	canvas.text = curDiv;
+	if (checkTime && ((new Date()).getTime() - loadTime) / 1000 < 10)
+		canvas.text = "intro";
+	else
+		checkTime = false;
+	canvas.draw = true;
 	
 	setTimeout('CheckFrames()', 1000);
 }

@@ -18,8 +18,10 @@ addAsset("yaytriangle", "./play/img/yay_triangle.png");
 addAsset("speechbubble", "./img/speech-bubble.png");
 
 function getMessage(divID) {
-	if (divID == "headerDiv")
-		return "Hi! I'm Shapey, and I'm here to guide you through my little world." +
+	if (divID == "intro")
+		return "Hover the mouse over me to see what I have to say!";
+	else if (divID == "headerDiv")
+		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer ." +
 				"You can click the arrows on the edge to navigate, or use the arrow keys instead. ";
 	else if (divID == "titleDiv")
 		return "For today's puzzle, instead of numbers we have all the letters in our newspaper's name! " +
@@ -83,6 +85,9 @@ function Piece(x, y) {
 	};
 	
 	self.Draw = function() {
+		if (!canvas.draw)
+			return false;
+		
 		ctx.save();
 		ctx.translate(self.x, self.y);
 		
@@ -99,8 +104,8 @@ function Piece(x, y) {
 				self.text = "Unhand me!";
 		}
 		
-		if (!self.bubble || self.visible > 0) {
-			if (self.visible > 0)
+		if (!self.bubble || self.visible > 0 || canvas.text == "intro") {
+			if (self.visible > 0 && canvas.text != "intro")
 				ctx.globalAlpha = self.visible / visibleDuration;
 			
 			if (self.bubble)
@@ -145,6 +150,7 @@ shapey.bubble = false;
 var speech = new Piece(0, 0);
 speech.image = images["speechbubble"];
 window.IS_IN_SIGHT = true;
+canvas.draw = false;
 
 function render() {
 	if (assetsLeft)
