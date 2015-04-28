@@ -1,6 +1,7 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var visibleDuration = 60;
+var textColor = "#271281";
 
 var images = {};
 var assetsLeft = 0;
@@ -17,14 +18,14 @@ function addAsset(name,src){
 addAsset("yaytriangle", "./play/img/yay_triangle.png");
 addAsset("speechbubble", "./img/speech-bubble.png");
 
-function getMessage(divID) {
-	if (divID == "intro")
+function getMessage(divID, visible) {
+	if (divID == "intro" && !visible)
 		return "Hover the mouse over me to see what I have to say!";
-	else if (divID == "headerDiv")
+	else if (divID == "intro" || divID == "headerDiv")
 		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer. " +
 				"You can click the arrows on the edge to navigate, or use the arrow keys instead. ";
 	else if (divID == "titleDiv")
-		return "For today's puzzle, instead of numbers we have all the letters in our newspaper's name! " +
+		return "For today's puzzle, instead of numbers we have all the letters in our paper's name! " +
 				"If you don't know how to solve Sudoku puzzles, you can continue down for an introduction.";
 	else if (divID == "magicDiv")
 		return "If you're having trouble, here's a hint: the 5 goes in the center, and the even numbers all go in the corners. " +
@@ -36,10 +37,10 @@ function getMessage(divID) {
 		return "The Hint button will throw a correct number onto the grid, but try not to use it. " +
 				"Sudoku is more rewarding the more thinking you do for yourself!";
 	else if (divID == "tutDiv")
-		return "Without further ado, here's a tutorial on the basic strategies of Sudoku. " +
-				"Parts of the board are greyed out so you can focus on what you need to.";
+		return "Parts of the board are greyed out so you can focus on what you need to. " +
+				"Remember that you can grab pieces using the number keys!";
 	else if (divID == "freeDiv")
-		return "Congratulations! After you complete a puzzle here you'll gain access to the whole paper. " +
+		return "Congratulations! You now have access to the whole paper. " +
 				"Know that you can click on a post to go straight to it, instead of using the arrows.";
 	else
 		return "This is the " + divID + " post, and that's about all I can tell you. " +
@@ -99,7 +100,7 @@ function Piece(x, y) {
 		
 		if (self.bubble) {
 			self.image = images["speechbubble"];
-			self.text = getMessage(canvas.text);
+			self.text = getMessage(canvas.text, self.visible > 0);
 			if (shapey.dragged)
 				self.text = "Unhand me!";
 		}
@@ -116,8 +117,8 @@ function Piece(x, y) {
 			if (self.text != "") {
 				var pointSize = Math.floor(canvas.width / 22.5);
 				var hyphen = "";
-				ctx.font= pointSize.toString() + "px Domine";
-				ctx.fillStyle = "#0000FF";
+				ctx.font= pointSize.toString() + "px Carrois Gothic";
+				ctx.fillStyle = textColor;
 				var position = 0;
 				var line = 0;
 				while (position < self.text.length) {

@@ -216,9 +216,7 @@ function CheckFrames() {
 		freeComplete = true;
 	}
 	else if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
-		registerName('tutDiv', 'headerDiv', '', 'freeDiv', '4x4Div');
-		registerName('freeDiv', 'tutDiv', '', '', 'magicDiv');
-		transDiv('tutDiv', false);
+		init_complete();
 		tutComplete = true;
 	}
 	else if (!fourComplete && iframes[3].contentWindow.IS_COMPLETE) {
@@ -344,5 +342,5 @@ function init_complete() {
 	registerName('haiku', 'tutDiv', '', 'verification', 'jurors');
 	registerName('algorithm', 'shapeDiv', 'latinDiv', 'ode', 'hardDiv');
 	
-	transDiv('freeDiv', false);
+	transDiv('freeDiv', true);
 }

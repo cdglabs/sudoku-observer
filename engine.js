@@ -411,7 +411,8 @@ function Engine(dimension, tileSize, mode, x, y) {
 	};
 	
 	self.GiveHint = function() {
-		if (self.puzzle.solution == 0 || self.puzzle.solved || self.blurPhase != 0)
+		if (self.puzzle.solution == 0 || self.puzzle.solution === undefined || 
+				self.puzzle.solved || self.blurPhase != 0)
 			return;
 		
 		// Initialize empty and wrong arrays
@@ -471,7 +472,8 @@ function Engine(dimension, tileSize, mode, x, y) {
 	// Fill in the board with a known solution
 	self.SetSolution = function() {
 		if (mode == "sudoku") {
-			if (self.puzzle.solution == 0 || self.puzzle.solved || self.blurPhase != 0)
+			if (self.puzzle.solution == 0 || self.puzzle.solution === undefined ||
+					self.puzzle.solved || self.blurPhase != 0)
 				return;
 			
 			var empty = [];

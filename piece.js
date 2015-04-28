@@ -238,7 +238,7 @@ function Slider(x, y, length, dimension) {
 		var oldPercentage = self.percentage;
 		self.percentage = (self.piece.x - self.x) / length;
 		if (self.percentage != oldPercentage) {
-		self.numHints = Math.floor(self.percentage * dimension*dimension);
+		self.numHints = Math.round(self.percentage * dimension*dimension);
 		if (self.numHints < 0)
 			self.numHints = 0;
 		if (self.numHints > dimension*dimension)

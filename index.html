@@ -7,7 +7,7 @@
 	<script src="blur.js"></script>
 	<script type="text/javascript">
   	WebFontConfig = {
-    	google: { families: [ 'Domine::latin' ] }
+    	google: { families: [ 'Domine::latin', 'Carrois+Gothic::latin' ] }
   	};
   	(function() {
     	var wf = document.createElement('script');
@@ -37,7 +37,7 @@
 	<div class="chapter" id="magicDiv" style="position: absolute; left: 1300px; top: 2475px; width: 1000px; height: 550px">
 		<p>
 			Sudoku has its roots in magic squares, square grids filled by consecutive integers with</br>
-			the <i>magical</i> property that the sum of all the row, columns, and main diagonals are equal.
+			the <i>magical</i> property that the of each row, column, and main diagonal is equal.
 		</p>
 		
 		<iframe id="magic" src="magic.html" scrolling="no" width="1000" height="300" style="margin:0 auto;display:block"
@@ -70,7 +70,7 @@
 		</p>
 	</div>
 	
-	<div class="chapter" id="4x4Div" style="position: absolute; left: 3400px; top: 1000px; width: 1000px; height: 500px">
+	<div class="chapter" id="4x4Div" style="position: absolute; left: 3425px; top: 1000px; width: 1000px; height: 500px">
 		<p>		
 			Sudoku proper first materialized not in Japan but in a 1979 edition of Dell Pencil Puzzles</br>
 			and Word Games. Solvers had to place the numbers 1-9 on a 9x9 grid so that each row, column,</br>
@@ -88,7 +88,7 @@
 		</p>
 	</div>
 	
-	<div class="chapter" id="tutDiv" style="position: absolute; left: 5025px; top: 850px; width: 1000px; height: 625px">
+	<div class="chapter" id="tutDiv" style="position: absolute; left: 5025px; top: 850px; width: 1000px; height: 650px">
 		<p>
 			Here's a simple tutorial showing some of the basic ideas you should have when solving a sudoku puzzle.
 		</p>
@@ -99,10 +99,11 @@
 			onclick="document.getElementById('tut').focus()"></iframe>
 	</div>
 	
-	<div class="chapter" id="freeDiv" style="position: absolute; left: 5025px; top: 2425px; width: 1000px; height: 700px">
+	<div class="chapter" id="freeDiv" style="position: absolute; left: 5025px; top: 2425px; width: 1000px; height: 725px">
 			<p>
 				Here you can play around with generating and solving 9x9 puzzles;
 				the slider below controls the number of hints given when you generate a new puzzle.
+				(Caution: values below 30 will cause some delay.)
 			</p>
 			
 			<iframe id="free" src="freeplay.html" width="1000" height="600" scrolling="no" style="margin:0 auto;display:block"
@@ -202,7 +203,7 @@ In 2012 Gary McGuire proved that there needs to be at least 17 clues for a Sudok
 
 In other words, any puzzle with under 17 clues can be solved by two people who can get different but equally valid solutions.
 
-Puzzles with multiple solutions lose some of the appeal of single-soution puzzles; guessing is necessary at some point, which clashes how people generally believe a puzzle should be solved.
+Puzzles with multiple solutions lose some of the appeal of single-soution puzzles; guessing is necessary at some point, which clashes with how people generally believe a puzzle should be solved.
 
 In the extreme case, what do you think it means to solve an empty grid?
 
@@ -364,7 +365,7 @@ Only when all of these strategies have been exhausted do we resort to backtracki
 	<div id="leftRect" class="blur"></div>
 	<div id="rightRect" class="blur"></div>
 	<div id="images"></div>
-	<canvas id="canvas">	<script src="./js/Mouse.js"></script></canvas>
+	<canvas id="canvas"><script src="./js/Mouse.js"></script></canvas>
 
 	<script src="topengine.js"></script>
 </body>

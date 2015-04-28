@@ -1,8 +1,8 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var squareColor = "#CCCCCC";
-var highlightColor = "#800000";
-var receivedColor = "#008000";
+var highlightColor = "#ffb2b2";
+var receivedColor = "#81f781";
 var lockColor = "#101010";
 
 function Square(region, piece, x, y) {

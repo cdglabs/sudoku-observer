@@ -72,6 +72,7 @@
 	engine = new Engine(dimension, tileSize, "sudoku", 0, 0);
 	engine.Permute(twentyPuzzles[Math.floor(Math.random()*20)], 45);
 	engine.InitializeSlider();
+	engine.slider.piece.gotoX = engine.slider.x + 45 / 81 * engine.slider.length;
 	window.IS_IN_SIGHT = true;
 	window.IS_COMPLETE = false;
 	</script>
