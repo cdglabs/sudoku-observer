@@ -1,6 +1,9 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var visibleDuration = 60;
+var fadeDuration = 60;
+var persistDuration = 180;
+var blinkingDuration = 120;
+var blinkDuration = 5;
 var textColor = "#271281";
 
 var images = {};
@@ -16,19 +19,18 @@ function addAsset(name,src){
 	images[name].src = src;
 }
 addAsset("yaytriangle", "./play/img/yay_triangle.png");
+addAsset("blinktriangle", "./play/img/yay_triangle_blink.png");
 addAsset("speechbubble", "./img/speech-bubble.png");
 
-function getMessage(divID, visible) {
-	if (divID == "intro" && !visible)
-		return "Hover the mouse over me to see what I have to say!";
-	else if (divID == "intro" || divID == "headerDiv")
+function getMessage(divID) {
+	if (divID == "headerDiv")
 		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer. " +
 				"You can click the arrows on the edge to navigate, or use the arrow keys instead. ";
 	else if (divID == "titleDiv")
 		return "For today's puzzle, instead of numbers we have all the letters in our paper's name! " +
 				"If you don't know how to solve Sudoku puzzles, you can continue down for an introduction.";
 	else if (divID == "magicDiv")
-		return "If you're having trouble, here's a hint: the 5 goes in the center, and the even numbers all go in the corners. " +
+		return "Here's some hints: the 5 goes in the center, and the sum of the numbers 1-9 is 45. " +
 				"And in case you were wondering, I am not inspired by Clippy. Not at all.";
 	else if (divID == "latinDiv")
 		return "I'm a refugee from Parable of the Polygons, where no one ever let us settle down. " +
@@ -47,12 +49,20 @@ function getMessage(divID, visible) {
 				"I'll get back to you when my creator gets back to me!";
 }
 
+function getBlurt(msgID, curMsg) {
+	if (msgID == "introMsg")
+		return "Hover the mouse over me to see what I have to say!";
+	else
+		return curMsg;
+}
+
 var clicked = false;
 var clickLock = false;
 var lastMouseX = 0;
 var lastMouseY = 0;
 var MX = 0;
 var MY = 0;
+var mouseChanged = false;
 var engine;
 function Piece(x, y) {
 	var self = this;
@@ -66,15 +76,24 @@ function Piece(x, y) {
 	self.dangleVel = 0;
 	self.bubble = true;
 	self.visible = 0;
+	self.blinking = 0;
+	self.blink = 0;
 	
 	self.Update = function() {
 		self.size = self.bubble ? canvas.width : canvas.width / 2;
-		if (self.bubble && self.visible > 0)
+		if (self.visible > 0)
 			self.visible--;
+		if (self.blinking > 0)
+			self.blinking--;
+		if (self.blink > 0)
+			self.blink--;
 		
-		if (MX > canvas.width / 2 && MX < canvas.width && MY > canvas.height / 2 && MY < canvas.height) {
-			if (self.bubble)
-				self.visible = visibleDuration;
+		if (mouseChanged && ((!self.visible && MX > canvas.width / 2 && MY > canvas.height / 2)
+				|| (self.visible && (MX > canvas.width / 2 || MY < canvas.height / 2)))) {
+			if (self.bubble) {
+ 				self.visible = persistDuration + fadeDuration;
+ 				canvas.blurt = false;
+			}
 			else if (clicked && !self.dragged) {
 				self.dragged = true;
 				clicked = false;
@@ -82,12 +101,16 @@ function Piece(x, y) {
 		}
 		else if (self.dragged)
 			self.dragged = false;
-		
+
+		if (canvas.setBlinking && !self.bubble) {
+			canvas.setBlinking = false;
+			self.blinking = blinkingDuration;
+		}
 	};
 	
 	self.Draw = function() {
 		if (!canvas.draw)
-			return false;
+			return;
 		
 		ctx.save();
 		ctx.translate(self.x, self.y);
@@ -100,14 +123,21 @@ function Piece(x, y) {
 		
 		if (self.bubble) {
 			self.image = images["speechbubble"];
-			self.text = getMessage(canvas.text, self.visible > 0);
+			self.text = canvas.blurt ? getBlurt(canvas.text, self.text) : getMessage(canvas.text);
 			if (shapey.dragged)
 				self.text = "Unhand me!";
+			else if (canvas.inMotion && !canvas.blurt)
+				self.text = "Hold on, I'm not supposed to text while driving...";
+		}
+		else {
+			if (self.blinking && Math.random() < .1)
+				self.blink = blinkDuration;
+			self.image = self.blink ? images["blinktriangle"] : images["yaytriangle"];
 		}
 		
-		if (!self.bubble || self.visible > 0 || canvas.text == "intro") {
-			if (self.visible > 0 && canvas.text != "intro")
-				ctx.globalAlpha = self.visible / visibleDuration;
+		if (!self.bubble || self.visible > 0 || canvas.blurt) {
+			if (self.visible > 0 && !canvas.blurt)
+				ctx.globalAlpha = self.visible / fadeDuration;
 			
 			if (self.bubble)
 				ctx.drawImage(self.image, 0, 0, self.size, self.size * 2 / 3);
@@ -152,11 +182,13 @@ var speech = new Piece(0, 0);
 speech.image = images["speechbubble"];
 window.IS_IN_SIGHT = true;
 canvas.draw = false;
+canvas.blurt = false;
 
 function render() {
 	if (assetsLeft)
 		return;
 	
+	mouseChanged = lastMouseX != MX || lastMouseY != MY;
 	lastMouseX = MX;
 	lastMouseY = MY;
 	MX = Mouse.x - parseInt(canvas.style.left) + canvas.offsetLeft - window.pageXOffset;
@@ -183,6 +215,7 @@ function render() {
 	
 	speech.Update();
 	speech.Draw();
+	
 }
 
 ////////////////////

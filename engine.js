@@ -695,6 +695,8 @@ window.requestAnimFrame = window.requestAnimationFrame ||
 	if(window.IS_IN_SIGHT){
 		render();
 	}
+	else
+		ctx.clearRect(0,0,canvas.width,canvas.height);
 })();
 
 window.IS_IN_SIGHT = false;

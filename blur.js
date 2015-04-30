@@ -65,6 +65,11 @@ function transDiv(name, willScroll) {
 	document.getElementById("images").innerHTML = "";
 	transRect(divMap[name].left, divMap[name].top, divMap[name].width, divMap[name].height, willScroll);
 	genArrows(name);
+	for (var i = 0; i < iframes.length; i++)
+		if (iframes[i].id + "Div" != name)
+			iframes[i].contentWindow.IS_IN_SIGHT = false;
+		else
+			iframes[i].contentWindow.IS_IN_SIGHT = true;
 	curDiv = name;
 }
 
@@ -205,36 +210,39 @@ var magicComplete = false;
 var latinComplete = false;
 var fourComplete = false;
 var tutComplete = false;
-var freeComplete = false;
 
 var loadTime = (new Date()).getTime();
 var checkTime = true;
 
+var SX = window.scrollX;
+var SY = window.scrollY;
+
 function CheckFrames() {
-	if (!freeComplete && iframes[5].contentWindow.IS_COMPLETE) {
+	var canvas = document.getElementById('canvas');
+	if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
 		init_complete();
-		freeComplete = true;
-	}
-	else if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
-		init_complete();
+		canvas.setBlinking = true;
 		tutComplete = true;
 	}
 	else if (!fourComplete && iframes[3].contentWindow.IS_COMPLETE) {
 		registerName('4x4Div', 'titleDiv', 'tutDiv', 'latinDiv', '');
 		registerName('tutDiv', 'headerDiv', '', '', '4x4Div');
 		transDiv('4x4Div', false);
+		canvas.setBlinking = true;
 		fourComplete = true;
 	}
 	else if (!latinComplete && iframes[2].contentWindow.IS_COMPLETE) {
 		registerName('latinDiv', '4x4Div', '', '', 'magicDiv');
 		registerName('4x4Div', 'titleDiv', '', 'latinDiv', '');
 		transDiv('latinDiv', false);
+		canvas.setBlinking = true;
 		latinComplete = true;
 	}
 	else if (!magicComplete && iframes[1].contentWindow.IS_COMPLETE) {
 		registerName('magicDiv', 'titleDiv', 'latinDiv', '', '');
 		registerName('latinDiv', 'titleDiv', '', '', 'magicDiv');
 		transDiv('magicDiv', false);
+		canvas.setBlinking = true;
 		magicComplete = true;
 	}
 	
@@ -248,19 +256,13 @@ function CheckFrames() {
 				delete iframes[i].contentWindow.ARROW_EVENT;
 				eventFound = true;
 			}
-			var bounds = iframes[i].getBoundingClientRect();
-			if (bounds.left > clientWidth || bounds.right < 0
-					|| bounds.top > clientHeight || bounds.bottom < 0)
-				iframes[i].contentWindow.IS_IN_SIGHT = false;
-			else
-				iframes[i].contentWindow.IS_IN_SIGHT = true;
 		}
 	}
 	
 	var best = 0;
 	var threshhold = 0;
 	var bestDiv = '';
-	if (!inMotion) {
+	if (!inMotion && (SX != window.scrollX || SY != window.scrollY)) {
 		for (var name in divMap) {
 			var div = divMap[name];
 			var left = div.left - window.scrollX;
@@ -280,7 +282,6 @@ function CheckFrames() {
 	if (bestDiv != curDiv && bestDiv != '' && best > threshhold)
 		transDiv(bestDiv, false);
 	
-	var canvas = document.getElementById('canvas');
 	var shapeySize = Math.floor(window.document.documentElement.clientHeight / 2);
 	if (shapeySize != canvas.width) {
 		canvas.style.position = 'fixed';
@@ -288,13 +289,19 @@ function CheckFrames() {
 		canvas.style.top = shapeySize.toString() + 'px';
 		canvas.width = shapeySize;
 		canvas.height = shapeySize;
+		transDiv(curDiv, false);
 	}
 	canvas.text = curDiv;
-	if (checkTime && ((new Date()).getTime() - loadTime) / 1000 < 15)
-		canvas.text = "intro";
-	else
+	if (checkTime && ((new Date()).getTime() - loadTime) / 1000 < 15) {
+		canvas.text = "introMsg";
+		canvas.blurt = true;
 		checkTime = false;
+	}
+	canvas.inMotion = inMotion;
 	canvas.draw = true;
+	
+	SX = window.scrollX;
+	SY = window.scrollY;
 	
 	setTimeout('CheckFrames()', 1000);
 }
@@ -308,7 +315,8 @@ function init() {
                document.getElementById('tut'),
                document.getElementById('free'),
                document.getElementById('color'),
-               document.getElementById('shapes')
+               document.getElementById('shapes'),
+               document.getElementById('hard')
                ];
 		
 	registerName('headerDiv', '', '', 'titleDiv', '');
@@ -324,11 +332,11 @@ function init_complete() {
 	registerName('titleDiv', 'headerDiv', '', '4x4Div', '');
 	registerName('magicDiv', 'hardDiv', 'ode', '', 'oddeven');
 	registerName('latinDiv', '4x4Div', 'jurors', 'effect', 'algorithm');
-	registerName('4x4Div', 'headerDiv', 'clues', 'latinDiv', 'shapeDiv');
+	registerName('4x4Div', 'headerDiv', 'clues', 'latinDiv', 'shapesDiv');
 	registerName('tutDiv', 'headerDiv', '', 'haiku', 'clues');
 	registerName('freeDiv', 'verification', '', '', 'jurors');
-	registerName('colorDiv', 'headerDiv', 'shapeDiv', 'hardDiv', 'difficult');
-	registerName('shapeDiv', 'headerDiv', '4x4Div', 'algorithm', 'colorDiv');
+	registerName('colorDiv', 'headerDiv', 'shapesDiv', 'hardDiv', 'difficult');
+	registerName('shapesDiv', 'headerDiv', '4x4Div', 'algorithm', 'colorDiv');
 	registerName('hardDiv', 'colorDiv', 'algorithm', 'magicDiv', 'difficult');
 	
 	registerName('jurors', 'clues', 'haiku', '', 'latinDiv');
@@ -340,7 +348,7 @@ function init_complete() {
 	registerName('quote', 'latinDiv', 'jurors', '', 'effect');
 	registerName('oddeven', 'difficult', 'magicDiv', '', '');
 	registerName('haiku', 'tutDiv', '', 'verification', 'jurors');
-	registerName('algorithm', 'shapeDiv', 'latinDiv', 'ode', 'hardDiv');
+	registerName('algorithm', 'shapesDiv', 'latinDiv', 'ode', 'hardDiv');
 	
 	transDiv('freeDiv', true);
 }

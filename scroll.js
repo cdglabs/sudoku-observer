@@ -112,6 +112,7 @@ function pageScroll() {
 		else
 			VY = AY = RY = 0;
 	}
-	else
+	
+	if (Math.sqrt(VX * VX + VY * VY) < .1)
 		inMotion = false;
 }

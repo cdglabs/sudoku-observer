@@ -174,7 +174,7 @@ function Piece(num, isHint, x, y) {
 					letter = 'o';
 					break;
 				case 5:
-					letter = 'd';
+					letter = 'k';
 					break;
 				case 6:
 					letter = 'b';
