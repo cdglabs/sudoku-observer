@@ -4,7 +4,9 @@ var fadeDuration = 60;
 var persistDuration = 180;
 var blinkingDuration = 120;
 var blinkDuration = 5;
-var textColor = "#271281";
+var blurtDuration = 600;
+var chokeDuration = 300;
+var textColor = "#000000";
 
 var images = {};
 var assetsLeft = 0;
@@ -20,6 +22,7 @@ function addAsset(name,src){
 }
 addAsset("yaytriangle", "./play/img/yay_triangle.png");
 addAsset("blinktriangle", "./play/img/yay_triangle_blink.png");
+addAsset("sadtriangle", "./play/img/sad_triangle.png");
 addAsset("speechbubble", "./img/speech-bubble.png");
 
 function getMessage(divID) {
@@ -27,8 +30,11 @@ function getMessage(divID) {
 		return "Hi! I'm Shapey, and I'm here to guide you through this edition of the Sudoku Observer. " +
 				"You can click the arrows on the edge to navigate, or use the arrow keys instead. ";
 	else if (divID == "titleDiv")
-		return "For today's puzzle, instead of numbers we have all the letters in our paper's name! " +
-				"If you don't know how to solve Sudoku puzzles, you can continue down for an introduction.";
+		return "Like in real life, you don't have to solve the daily puzzle, but if you want to try the rules are to the left. " +
+				"Otherwise you can continue down for an introduction to Sudoku.";
+	else if (divID == "rulesDiv")
+		return "Like in a certain other blog post, I can be dragged around (sort of). " +
+				"But you wouldn't do that to a poor homeless shape, would you?";
 	else if (divID == "magicDiv")
 		return "Here's some hints: the 5 goes in the center, and the sum of the numbers 1-9 is 45. " +
 				"And in case you were wondering, I am not inspired by Clippy. Not at all.";
@@ -44,6 +50,12 @@ function getMessage(divID) {
 	else if (divID == "freeDiv")
 		return "Congratulations! You now have access to the whole paper. " +
 				"Know that you can click on a post to go straight to it, instead of using the arrows.";
+	else if (divID == "colorDiv")
+		return "This is the color puzzle. Have fun!";
+	else if (divID == "shapesDiv")
+		return "This is the shapes puzzle. Remember, shapes are people too!";
+	else if (divID == "hardDiv")
+		return "This is the so-called most difficult puzzle. (Try to) have fun!";
 	else
 		return "This is the " + divID + " post, and that's about all I can tell you. " +
 				"I'll get back to you when my creator gets back to me!";
@@ -62,6 +74,8 @@ var lastMouseX = 0;
 var lastMouseY = 0;
 var MX = 0;
 var MY = 0;
+var CX = 0;
+var CY = 0;
 var mouseChanged = false;
 var engine;
 function Piece(x, y) {
@@ -75,9 +89,11 @@ function Piece(x, y) {
 	self.dangle = 0;
 	self.dangleVel = 0;
 	self.bubble = true;
+	self.blurting = false;
 	self.visible = 0;
 	self.blinking = 0;
 	self.blink = 0;
+	self.dying = 0;
 	
 	self.Update = function() {
 		self.size = self.bubble ? canvas.width : canvas.width / 2;
@@ -87,21 +103,36 @@ function Piece(x, y) {
 			self.blinking--;
 		if (self.blink > 0)
 			self.blink--;
+		if (self.visible == 0)
+			self.blurting = false;
+		if (inMotion)
+			self.visible = 0;
+		if (!self.dragged)
+			self.dying = 0;
 		
-		if (mouseChanged && ((!self.visible && MX > canvas.width / 2 && MY > canvas.height / 2)
-				|| (self.visible && (MX > canvas.width / 2 || MY < canvas.height / 2)))) {
+		var inShapey = MX > canvas.width / 2 && MY > canvas.height / 2;
+		var inBubble = MX > 0 && MY > 0 && MY < canvas.height / 2;
+		
+		if (self.bubble && canvas.blurt) {
+			self.visible = blurtDuration;
+			self.blurting = true;
+			canvas.blurt = false;
+		}
+		else if (mouseChanged && ((!self.visible && inShapey)
+				|| (self.visible && (inShapey || inBubble)))) {
 			if (self.bubble) {
  				self.visible = persistDuration + fadeDuration;
- 				canvas.blurt = false;
-			}
-			else if (clicked && !self.dragged) {
-				self.dragged = true;
-				clicked = false;
+ 				self.blurting = false;
 			}
 		}
-		else if (self.dragged)
-			self.dragged = false;
 
+		if (!self.bubble && inShapey && clicked) {
+			clicked = false;
+			self.dragged = !self.dragged;
+			CX = MX;
+			CY = MY;
+		}
+		
 		if (canvas.setBlinking && !self.bubble) {
 			canvas.setBlinking = false;
 			self.blinking = blinkingDuration;
@@ -109,7 +140,7 @@ function Piece(x, y) {
 	};
 	
 	self.Draw = function() {
-		if (!canvas.draw)
+		if (!canvas.draw || (self.bubble && inMotion && !self.blurting))
 			return;
 		
 		ctx.save();
@@ -123,26 +154,48 @@ function Piece(x, y) {
 		
 		if (self.bubble) {
 			self.image = images["speechbubble"];
-			self.text = canvas.blurt ? getBlurt(canvas.text, self.text) : getMessage(canvas.text);
-			if (shapey.dragged)
-				self.text = "Unhand me!";
-			else if (canvas.inMotion && !canvas.blurt)
-				self.text = "Hold on, I'm not supposed to text while driving...";
+			self.text = self.blurting ? getBlurt(canvas.text, self.text) : getMessage(canvas.text);
+			if (shapey.dying)
+				self.text = "If you keep me here for a few more seconds I'll be gone...please, I have nowhere else to go :(";
+			else if (shapey.dragged)
+				self.text = "Unhand me! Don't try to get rid of me by forcing me into the corner!";
 		}
 		else {
 			if (self.blinking && Math.random() < .1)
 				self.blink = blinkDuration;
-			self.image = self.blink ? images["blinktriangle"] : images["yaytriangle"];
+			if (speech.visible > (persistDuration + fadeDuration) * .9)
+				self.image = images["blinktriangle"];
+			else
+				self.image = images["yaytriangle"];
+			self.image = self.blink ? images["blinktriangle"] : self.image;
+			self.image = self.dragged ? images["sadtriangle"] : self.image;
 		}
 		
-		if (!self.bubble || self.visible > 0 || canvas.blurt) {
-			if (self.visible > 0 && !canvas.blurt)
+		if (!self.bubble || self.visible > 0 || self.blurting) {
+			if (self.visible > 0 && !self.blurting)
 				ctx.globalAlpha = self.visible / fadeDuration;
 			
 			if (self.bubble)
 				ctx.drawImage(self.image, 0, 0, self.size, self.size * 2 / 3);
-			else
+			else if (!self.dragged)
 				ctx.drawImage(self.image, canvas.width / 2, canvas.height / 2, self.size, self.size);
+			else {
+				var OX = MX - CX;
+				var OY = MY - CY;
+				OX = OX > 0 ? OX : 0;
+				OY = OY > 0 ? OY : 0;
+				if (MX > canvas.width * 3/4 && MY > canvas.height * 3/4)
+					self.dying++;
+				else
+					self.dying = 0;
+				ctx.globalAlpha = (chokeDuration - self.dying) / chokeDuration;
+				ctx.drawImage(self.image, canvas.width / 2 + OX, canvas.height / 2 + OY, self.size, self.size);
+				if (self.dying == chokeDuration) {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					canvas.draw = false;
+					window.IS_IN_SIGHT = false;
+				}
+			}
 			
 			if (self.text != "") {
 				var pointSize = Math.floor(canvas.width / 22.5);

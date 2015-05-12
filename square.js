@@ -12,8 +12,18 @@ function Square(region, piece, x, y) {
 	self.piece = piece;
 	self.hasHint = false;
 	self.hintNum = -1;
+	self.highlighted = false;
 	self.x = x;
 	self.y = y;
+	
+	self.Update = function() {
+		self.piece.Update(true);
+		if (!self.piece.dragged) {
+			self.piece.gotoX = self.x + (tileSize-self.piece.width)/2;
+			self.piece.gotoY = self.y + (tileSize+fontHeight)/2;
+
+		}
+	};
 	
 	self.Draw = function(x, y, show, fade, highlight) {
 		// Draw self
@@ -27,17 +37,15 @@ function Square(region, piece, x, y) {
 			ctx.fillStyle = receivedColor;
 		else
 			ctx.fillStyle = squareColor;
-		ctx.globalAlpha = .33;
+		
+		self.highlighted = highlight;
+		ctx.globalAlpha = .50;
+		ctx.clearRect(self.x + 3/40*tileSize, self.y + 3/40*tileSize, tileSize*9/10, tileSize*9/10);
 		ctx.fillRect(self.x + 3/40*tileSize, self.y + 3/40*tileSize, tileSize*9/10, tileSize*9/10);
 		ctx.globalAlpha = 1;
 		
 		// Draw piece
-		self.piece.Update(show);
-		if (!self.piece.dragged) {
-			self.piece.gotoX = self.x + (tileSize-self.piece.width)/2;
-			self.piece.gotoY = self.y + (tileSize+fontHeight)/2;
-			self.piece.Draw(self.piece.x, self.piece.y);
-		}
+		self.piece.Draw(self.piece.x, self.piece.y);
 		
 		// Fading
 		if (show && fade < 75) // Fade out
@@ -63,14 +71,25 @@ function PieceContainer(x, y) {
 	self.y = y;
 	self.stock = [];
 	
-	self.Draw = function(x, y) {
+	self.Update = function() {
 		for (var i = 0; i < self.stock.length; i++) {
-			var piece = self.stock[i];
-			piece.Update(true);
-			if (!piece.dragged) {
-				piece.gotoX = self.x + (tileSize-piece.width)/2;
-				piece.gotoY = self.y + (tileSize+fontHeight)/2;
-				piece.Draw(piece.x, piece.y);
+			var p = self.stock[i];
+			if (!p.dragged) {
+				p.gotoX = self.x + (tileSize-p.width)/2;
+				p.gotoY = self.y + (tileSize+fontHeight)/2;
+			}
+			p.Update(true);
+		}
+	};
+	
+	self.Draw = function() {
+		for (var i = 0; i < self.stock.length; i++) {
+			var p = self.stock[i];
+			if (!p.dragged) {
+				var dx = Math.abs(p.gotoX - p.x);
+				var dy = Math.abs(p.gotoY - p.y);
+				if (i < 2 || dx > 1 || dy > 1)
+					p.Draw(p.x, p.y);
 			}
 		}
 	};

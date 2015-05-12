@@ -1,23 +1,42 @@
-function viewRect(left, top, width, height) {		
-	document.getElementById('topRect').style.width = document.body.style.width;
-	document.getElementById('topRect').style.height = top.toString() + 'px';
-	document.getElementById('topRect').style.left = '0px';
-	document.getElementById('topRect').style.top = '0px';
+/* Gray rectangles that box in the focused element; initialized on page load.
+---------------------------------------
+|									  |
+|				  top			      |
+|									  |
+---------------------------------------
+|			|				|		  |
+|	left	|	element		|	right |
+|			|				|		  |
+---------------------------------------
+|									  |
+|				bottom			  	  |
+|									  |
+---------------------------------------
+ */
+var topRect, botRect, leftRect, rightRect;
+
+// Manipulates the rectangles so that they box in the element whose upper-left
+// corner is at (left, top) and has dimensions width x height.
+function viewRect(left, top, width, height) {
+	topRect.style.width = document.body.style.width;
+	topRect.style.height = top.toString() + 'px';
+	topRect.style.left = '0px';
+	topRect.style.top = '0px';
 	
-	document.getElementById('botRect').style.width = document.body.style.width;
-	document.getElementById('botRect').style.height = (parseInt(document.body.style.height) - (top + height)).toString() + 'px';
-	document.getElementById('botRect').style.left = '0px';
-	document.getElementById('botRect').style.top = (top + height).toString() + 'px';
+	botRect.style.width = document.body.style.width;
+	botRect.style.height = (parseInt(document.body.style.height) - (top + height)).toString() + 'px';
+	botRect.style.left = '0px';
+	botRect.style.top = (top + height).toString() + 'px';
 	
-	document.getElementById('leftRect').style.width = left.toString() + 'px';
-	document.getElementById('leftRect').style.height = height.toString() + 'px';
-	document.getElementById('leftRect').style.left = '0px';
-	document.getElementById('leftRect').style.top = top.toString() + 'px';
+	leftRect.style.width = left.toString() + 'px';
+	leftRect.style.height = height.toString() + 'px';
+	leftRect.style.left = '0px';
+	leftRect.style.top = top.toString() + 'px';
 	
-	document.getElementById('rightRect').style.width = (parseInt(document.body.style.width) - (left + width)).toString() + 'px';
-	document.getElementById('rightRect').style.height = height.toString() + 'px';
-	document.getElementById('rightRect').style.left = (left + width).toString() + 'px';
-	document.getElementById('rightRect').style.top = top.toString() + 'px';
+	rightRect.style.width = (parseInt(document.body.style.width) - (left + width)).toString() + 'px';
+	rightRect.style.height = height.toString() + 'px';
+	rightRect.style.left = (left + width).toString() + 'px';
+	rightRect.style.top = top.toString() + 'px';
 }
 
 function transOpacity(level) {
@@ -210,6 +229,7 @@ var magicComplete = false;
 var latinComplete = false;
 var fourComplete = false;
 var tutComplete = false;
+var freeComplete = false;
 
 var loadTime = (new Date()).getTime();
 var checkTime = true;
@@ -219,8 +239,14 @@ var SY = window.scrollY;
 
 function CheckFrames() {
 	var canvas = document.getElementById('canvas');
-	if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
+	if (!freeComplete && curDiv == 'freeDiv' && !inMotion) {
 		init_complete();
+		freeComplete = true;
+	}
+	if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
+		registerName('tutDiv', 'headerDiv', '', 'freeDiv', '4x4Div');
+		registerName('freeDiv', 'tutDiv', '', '', 'magicDiv');
+		transDiv('tutDiv', false);
 		canvas.setBlinking = true;
 		tutComplete = true;
 	}
@@ -316,39 +342,49 @@ function init() {
                document.getElementById('free'),
                document.getElementById('color'),
                document.getElementById('shapes'),
-               document.getElementById('hard')
+               document.getElementById('hard'),
+               document.getElementById('rules')
                ];
-		
-	registerName('headerDiv', '', '', 'titleDiv', '');
-	registerName('titleDiv', 'headerDiv', '', 'magicDiv', '');
+	
+	topRect = document.getElementById('topRect');
+	botRect = document.getElementById('botRect');
+	leftRect = document.getElementById('leftRect');
+	rightRect = document.getElementById('rightRect');
+	
+	registerName('headerDiv', '', 'attributions', 'titleDiv', '');
+	registerName('titleDiv', 'headerDiv', '', 'magicDiv', 'rulesDiv');
+	registerName('rulesDiv', 'headerDiv', 'titleDiv', 'magicDiv', '');
 	registerName('magicDiv', 'titleDiv', '', '', '');
+	registerName('attributions', '', '', '', 'headerDiv');
 	
 	transDiv('headerDiv', true);
 	CheckFrames();
 }
 
 function init_complete() {		
-	registerName('headerDiv', '', '', 'titleDiv', '');
-	registerName('titleDiv', 'headerDiv', '', '4x4Div', '');
+	registerName('headerDiv', '', 'attributions', 'titleDiv', '');
+	registerName('titleDiv', 'headerDiv', '', '4x4Div', 'rulesDiv');
+	registerName('rulesDiv', 'headerDiv', 'titleDiv', 'colorDiv', '');
 	registerName('magicDiv', 'hardDiv', 'ode', '', 'oddeven');
 	registerName('latinDiv', '4x4Div', 'jurors', 'effect', 'algorithm');
 	registerName('4x4Div', 'headerDiv', 'clues', 'latinDiv', 'shapesDiv');
-	registerName('tutDiv', 'headerDiv', '', 'haiku', 'clues');
-	registerName('freeDiv', 'verification', '', '', 'jurors');
-	registerName('colorDiv', 'headerDiv', 'shapesDiv', 'hardDiv', 'difficult');
-	registerName('shapesDiv', 'headerDiv', '4x4Div', 'algorithm', 'colorDiv');
+	registerName('tutDiv', 'headerDiv', 'attributions', 'haiku', 'clues');
+	registerName('freeDiv', 'verification', 'attributions', '', 'jurors');
+	registerName('colorDiv', 'rulesDiv', 'shapesDiv', 'hardDiv', 'difficult');
+	registerName('shapesDiv', 'rulesDiv', '4x4Div', 'algorithm', 'colorDiv');
 	registerName('hardDiv', 'colorDiv', 'algorithm', 'magicDiv', 'difficult');
 	
 	registerName('jurors', 'clues', 'haiku', '', 'latinDiv');
 	registerName('difficult', 'headerDiv', 'hardDiv', 'oddeven', '');
 	registerName('clues', 'headerDiv', 'tutDiv', 'jurors', '4x4Div');
-	registerName('verification', 'haiku' ,'', 'freeDiv', 'jurors');
+	registerName('verification', 'haiku' ,'attributions', 'freeDiv', 'jurors');
 	registerName('ode', 'algorithm', 'effect', '', 'magicDiv');
 	registerName('effect', 'latinDiv', 'quote', '', 'ode');
 	registerName('quote', 'latinDiv', 'jurors', '', 'effect');
 	registerName('oddeven', 'difficult', 'magicDiv', '', '');
-	registerName('haiku', 'tutDiv', '', 'verification', 'jurors');
+	registerName('haiku', 'tutDiv', 'attributions', 'verification', 'jurors');
 	registerName('algorithm', 'shapesDiv', 'latinDiv', 'ode', 'hardDiv');
+	registerName('attributions', '', '', '', 'headerDiv');
 	
 	transDiv('freeDiv', true);
 }

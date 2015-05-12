@@ -22,7 +22,10 @@
 	  				+ " &ordmF, " + weatherData.weather[0].description;
 	  		}
 	  	}
-	  	weatherReq.open("GET", "http://api.openweathermap.org/data/2.5/weather?id=5368361&units=imperial&APPID=ed983b84a08037619de69f26990568e5", true);
+	  	
+	  	var locations = ["5128581", "5368361", "4887398", "4699066", "4560349", "5308655", "4726206", "5391811", "4684888", "5392171", "4116315", "4259418", "5391959"];
+	  	var locstr = locations[Math.floor(Math.random() * locations.length)];
+	  	weatherReq.open("GET", "http://api.openweathermap.org/data/2.5/weather?id=" + locstr + "&units=imperial&APPID=ed983b84a08037619de69f26990568e5", true);
 	  	weatherReq.send();
     }
     </script>

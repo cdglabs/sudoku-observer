@@ -17,6 +17,8 @@
 		set2 = ['pill', 'twinkle', 'spiral', 'x', 'note', 'triangle', 'drop', 'heart', 'checker'];
 		
 		function SwitchSet() {
+			engine.refresh = true;
+			ctx.clearRect(tileSize*(dim+1/20), 0, tileSize, tileSize*dim);
 			var imgArray = [];
 			if (engine.useLetters) {
 				engine.useLetters = false;

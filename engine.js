@@ -39,8 +39,10 @@ var hardPuzzles = [
 	];
 
 var engine;
+var dim;
 function Engine(dimension, tileSize, mode, x, y) {
 	var self = this;
+	dim = dimension;
 	
 	self.x = x;
 	self.y = y;
@@ -60,6 +62,7 @@ function Engine(dimension, tileSize, mode, x, y) {
 	self.startTutorial = false;
 	self.startTime = 0;
 	self.curTime = 0;
+	self.refresh = false;
 	
 	if (mode == "sudoku") {
 		self.puzzle = new Sudoku(dimension, x, y);
@@ -155,6 +158,7 @@ function Engine(dimension, tileSize, mode, x, y) {
 	
 	// I.e. clear but leave the hints intact
 	self.Reset = function() {
+		self.refresh = true;
 		if (self.blurPhase != 0)
 			return;
 
@@ -365,7 +369,9 @@ function Engine(dimension, tileSize, mode, x, y) {
 	self.PlacePiece = function(piece) {
 		if (piece.num != 0) {
 			piece.inPuzzle = true;
-			self.numPool[piece.num-1].stock.splice(0, 1);
+			for (var i = 0; i < self.numPool[piece.num-1].stock.length; i++)
+				if (piece == self.numPool[piece.num-1].stock[i])
+					self.numPool[piece.num-1].stock.splice(i, 1);
 		}
 	};
 	
@@ -373,7 +379,7 @@ function Engine(dimension, tileSize, mode, x, y) {
 		if (piece.num != 0) {
 			piece.isConflicting = false;
 			piece.inPuzzle = false;
-			self.numPool[piece.num-1].stock.push(piece);
+			self.numPool[piece.num-1].stock.splice(0, 0, piece);
 		}
 	};
 	
@@ -526,21 +532,13 @@ function Engine(dimension, tileSize, mode, x, y) {
 		}
 	};
 	
-	self.Update = function() {
-		self.puzzle.Update();
-		self.puzzle.Draw(self.blur);
-		if (mode == "magic")
-			return;
-		
-		if (self.slider != undefined) {
-			self.slider.Update();
-			self.slider.Draw();
+	self.Update = function(refresh) {
+		if (self.refresh) {
+			refresh = true;
+			self.refresh = false;
 		}
-		
-		if (self.startTutorial)
-			self.InitializeTutorial();
-		
 		if (self.blur.fade > 0) {
+			refresh = true;
 			self.blur.fade += 1;
 			if (self.blur.fade == 75) {
 				self.blurPhase = (self.blurPhase + 1) % 4;
@@ -561,6 +559,27 @@ function Engine(dimension, tileSize, mode, x, y) {
 			else if (self.blur.fade == 150)
 				self.blur.fade = 0;
 		}
+		
+		self.puzzle.Update();
+		self.puzzle.Draw(self.blur, refresh);
+		
+		if (self.slider != undefined) {
+			self.slider.Update();
+			var slideRow = self.puzzle.refresh[dimension];
+			var drawSlider = false;
+			for (var i = 0; i < slideRow.length; i++) {
+				if (slideRow[i])
+					drawSlider = true;
+				slideRow[i] = false;
+			}
+			if (drawSlider) {
+				ctx.clearRect(0, tileSize*(dim+1/20), tileSize*(dim+1/20), tileSize*(dim+1/20));
+				self.slider.Draw();
+			}
+		}
+		
+		if (self.startTutorial)
+			self.InitializeTutorial();
 		
 		// At any point you can reset, but you must move incrementally from 0 to 3
 		switch (self.blurPhase) {
@@ -593,6 +612,7 @@ function Engine(dimension, tileSize, mode, x, y) {
 var justDropped;
 var movesUntilSolve = 15;
 var history = 0;
+var refreshAll = true;
 function render() {
 	if (assetsLeft > 0) return;
 	
@@ -608,24 +628,10 @@ function render() {
 		clickLock = false;
 	}
 	
-	if (window.location.search == "?log=true") {
-		var str = "";
-		if (Mouse.pressed)
-			str += "Mouse down; ";
-		else
-			str += "Mouse up; ";
-		if (clicked)
-			str += "clicked is true";
-		if (!clicked)
-			str += "clicked is false";
-		console.log(str);
-	}
-	
 	if (Mouse.pressed)
 		Mouse.pressed = false;
 	
 	ctx.font = font;
-	ctx.clearRect(0,0,canvas.width,canvas.height);
 	
 	if (draggedPiece != 0 && !document.hasFocus() && engine.mode == "sudoku") {
 		var pickupSquare = engine.GetSquare(pickupX, pickupY);
@@ -638,10 +644,16 @@ function render() {
 		draggedPiece = 0;
 	}
 	
-	engine.Update();
-	if (engine.mode == "sudoku")
-		for (var p = 0; p < engine.numPool.length; p++)
-			engine.numPool[p].Draw();
+	engine.Update(refreshAll);
+	if (engine.mode == "sudoku") {
+		for (var p = 0; p < engine.numPool.length; p++) {
+			engine.numPool[p].Update();
+			if (engine.puzzle.refresh[p][dim]) {
+				engine.numPool[p].Draw();
+				engine.puzzle.refresh[p][dim] = false;
+			}
+		}
+	}
 	
 	if (draggedPiece != 0) {
 		draggedPiece.Draw(draggedPiece.x, draggedPiece.y);
@@ -690,13 +702,22 @@ window.requestAnimFrame = window.requestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	function(callback){ window.setTimeout(callback, 1000/60); };
 
+var throttle = 0;
 (function animloop(){
 	requestAnimFrame(animloop);
+	throttle++;
+	if (throttle < 1)
+		return;
+	throttle = 0;
 	if(window.IS_IN_SIGHT){
 		render();
+		refreshAll = false;
 	}
-	else
-		ctx.clearRect(0,0,canvas.width,canvas.height);
+	else {
+		if (!refreshAll)
+			ctx.clearRect(0,0,canvas.width,canvas.height);
+		refreshAll = true;
+	}
 })();
 
 window.IS_IN_SIGHT = false;

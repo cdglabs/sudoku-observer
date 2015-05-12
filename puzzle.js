@@ -22,6 +22,25 @@ function Sudoku(dimension, x, y) {
 	self.regions = []; // Used for CheckConflict
 	self.horizontals = [];
 	self.verticals = [];
+	self.refresh = [];
+
+	// Bold the outline of the grid for now
+	for (var i = 0; i < dimension+1; i++) {
+		self.horizontals[i] = [];
+		self.verticals[i] = [];
+		self.refresh[i] = [];
+		for (var j = 0; j < dimension+1; j++) {
+			if (i == 0 || i == dimension)
+				self.horizontals[i][j] = true;
+			else
+				self.horizontals[i][j] = false;
+			if (j == 0 || j == dimension)
+				self.verticals[i][j] = true;
+			else
+				self.verticals[i][j] = false;
+			self.refresh[i][j] = false;
+		}
+	}
 	
 	// True if row/column/region has a conflicting non-hint piece
 	self.conflicts = new Object();
@@ -32,22 +51,6 @@ function Sudoku(dimension, x, y) {
 		self.conflicts.rows[i] = false;
 		self.conflicts.columns[i] = false;
 		self.conflicts.regions[i] = false;
-	}
-	
-	// Bold the outline of the grid for now
-	for (var i = 0; i < dimension+1; i++) {
-		self.horizontals[i] = [];
-		self.verticals[i] = [];
-		for (var j = 0; j < dimension+1; j++) {
-			if (i == 0 || i == dimension)
-				self.horizontals[i][j] = true;
-			else
-				self.horizontals[i][j] = false;
-			if (j == 0 || j == dimension)
-				self.verticals[i][j] = true;
-			else
-				self.verticals[i][j] = false;
-		}
 	}
 	
 	self.InitializeRegions = function() {
@@ -197,9 +200,52 @@ function Sudoku(dimension, x, y) {
 	self.Update = function() {
 		if (self.solution == 0 && self.solver != 0)
 			self.Solve();
+		for (var i = 0; i < self.squares.length; i++)
+			for (var j = 0; j < self.squares.length; j++)
+				self.squares[i][j].Update();
 	};
 
-	self.Draw = function(blur) {
+	self.Draw = function(blur, refresh) {
+		if (!refresh) {
+			for (var i = 0; i < self.squares.length; i++)
+				for (var j = 0; j < self.squares.length; j++) {
+					var	p = self.squares[i][j].piece;
+					if (p.num == 0)
+						continue;
+					
+					var dx = Math.abs(p.gotoX - p.x);
+					var dy = Math.abs(p.gotoY - p.y);
+					if (dx > 1 || dy > 1 || p.dangle != 0) {
+						var ix = Math.floor((p.x - self.x) / tileSize);
+						var iy = Math.floor((p.y - self.y) / tileSize);
+						for (var k = Math.max(0, ix - 1); k < Math.min(dimension+1, ix + 2); k++)
+							for (var l = Math.max(0, iy - 1); l < Math.min(dimension+1, iy + 2); l++)
+								self.refresh[l][k] = true;
+						ctx.clearRect((ix - 1) * tileSize, (iy - 1) * tileSize, tileSize*3, tileSize*3);
+					}
+				}
+			
+			for (var i = 0; i < engine.numPool.length; i++)
+				for (var j = 0; j < engine.numPool[i].stock.length; j++) {
+					var p = engine.numPool[i].stock[j];
+					var dx = Math.abs(p.gotoX - p.x);
+					var dy = Math.abs(p.gotoY - p.y);
+					if (dx > 1 || dy > 1 || p.dangle != 0) {
+						var ix = Math.floor((p.x - self.x) / tileSize);
+						var iy = Math.floor((p.y - self.y) / tileSize);
+						for (var k = Math.max(0, ix - 1); k < Math.min(dimension+1, ix + 2); k++)
+							for (var l = Math.max(0, iy - 1); l < Math.min(dimension+1, iy + 2); l++)
+								self.refresh[l][k] = true;
+						ctx.clearRect((ix - 1) * tileSize, (iy - 1) * tileSize, tileSize*3, tileSize*3);
+					}
+				}
+		}
+		else {
+			for (var i = 0; i < self.refresh.length; i++)
+				for (var j = 0; j < self.refresh[i].length; j++)
+					self.refresh[i][j] = true;
+		}
+		
 		var v = [];
 		
 		// Draw the grid borders
@@ -242,8 +288,10 @@ function Sudoku(dimension, x, y) {
 				var s = self.squares[i][j];
 				var show = (blur.restrict && (inRow && inColumn)) || (!blur.restrict && (inRow || inColumn));
 				var highlight = self.conflicts.rows[i] || self.conflicts.columns[j] || self.conflicts.regions[s.region];
-				s.Draw(s.x, s.y, show, blur.fade, highlight);
-		}
+				if (highlight || (!highlight && s.highlighted) || self.refresh[i][j])
+					s.Draw(s.x, s.y, show, blur.fade, highlight);
+				self.refresh[i][j] = false;
+			}
 	};
 	
 };
@@ -265,6 +313,13 @@ function Magic(dimension, x, y) {
 	for (var i = 1; i <= dimension*dimension; i++)
 		magicSum += i;
 	magicSum /= dimension;
+	
+	self.refresh = [];
+	for (var i = 0; i < dimension + 2; i++) {
+		self.refresh[i] = [];
+		for (var j = 0; j < dimension + 1; j++)
+			self.refresh[i][j] = false;
+	}
 	
 	self.CheckSolved = function() {
 		self.Update();
@@ -312,6 +367,9 @@ function Magic(dimension, x, y) {
 	self.Update = function() {		
 		// For a 3x3 magic square, the structure of sums would be
 		// [row1_sum, row2_sum, row3_sum, col1_sum, col2_sum, col3_sum, leftDiag_sum, rightDiag_sum]
+		for (var i = 0; i < self.squares.length; i++)
+			for (var j = 0; j < self.squares.length; j++)
+				self.squares[i][j].Update();
 		for (var s = 0; s < dimension*2 + 2; s++)
 			self.sums[s].num = 0;
 		
@@ -328,11 +386,39 @@ function Magic(dimension, x, y) {
 			}
 		}
 		
-		for (var s = 0; s < dimension*2 + 2; s++)
-			self.sums[s].text = self.sums[s].num.toString();
+		for (var s = 0; s < dimension*2 + 2; s++) {
+			var m = self.sums[s];
+			if (m.text != m.num.toString()) {
+				m.text = m.num.toString();
+				ctx.clearRect(m.x, m.y, tileSize, tileSize);
+				self.refresh[m.y / tileSize][m.x / tileSize] = true;
+			}
+		}
 	};
 
-	self.Draw = function() {
+	self.Draw = function(blur, refresh) {
+		if (!refresh) {
+			for (var i = 0; i < dimension; i++)
+				for (var j = 0; j < dimension; j++) {
+					var	p = self.squares[i][j].piece;					
+					var dx = Math.abs(p.gotoX - p.x);
+					var dy = Math.abs(p.gotoY - p.y);
+					if (dx > 1 || dy > 1 || p.dangle != 0) {
+						var ix = Math.floor((p.x - self.x) / tileSize);
+						var iy = Math.floor((p.y - self.y) / tileSize);
+						for (var k = Math.max(0, ix - 1); k < Math.min(dimension+2, ix + 2); k++)
+							for (var l = Math.max(0, iy - 1); l < Math.min(dimension+1, iy + 2); l++)
+								self.refresh[l][k] = true;
+						ctx.clearRect((ix - 1) * tileSize, (iy - 1) * tileSize, tileSize*3, tileSize*3);
+					}
+				}
+		}
+		else {
+			for (var i = 0; i < self.refresh.length; i++)
+				for (var j = 0; j < self.refresh[i].length; j++)
+					self.refresh[i][j] = true;
+		}
+		
 		// Draw the grid borders
 		ctx.fillStyle = pencilColor;
 		for (var i = 0; i <= dimension; i++) {
@@ -342,14 +428,20 @@ function Magic(dimension, x, y) {
 		ctx.fillRect(x, dimension*tileSize + y, tileSize, tileSize/20);
 		
 		// Draw the sum boxes
-		for (var s = 0; s < dimension*2 + 2; s++)
-			self.sums[s].Draw(magicSum);
+		for (var s = 0; s < dimension*2 + 2; s++) {
+			var m = self.sums[s];
+			if (self.refresh[m.y / tileSize][m.x / tileSize])
+				m.Draw(magicSum);
+			self.refresh[m.y / tileSize][m.x / tileSize] = false;
+		}
 		
 		// Draw the squares
 		for (var i = 0; i < self.squares.length; i++)
-			for (var j = 0; j < self.squares.length; j++) {
-				var s = self.squares[i][j];
-				s.Draw(s.x, s.y, true, 0);
-		}
+			for (var j = 0; j < self.squares.length; j++)
+				if (self.refresh[i][j+1]) {
+					var s = self.squares[i][j];
+					s.Draw(s.x, s.y, true, 0);
+					self.refresh[i][j+1] = false;
+				}
 	};
 };

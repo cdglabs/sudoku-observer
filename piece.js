@@ -1,7 +1,7 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var font = "20px Domine";
-var fontHeight = 15;
+var fontHeight = 20;
 var normalColor = "#0000FF";
 var conflictColor = "#FF0000";
 var hintColor = "#404040";
@@ -48,10 +48,7 @@ function Piece(num, isHint, x, y) {
 	self.dangleVel = 0;
 	self.width = ctx.measureText(self.text).width;
 	
-	self.Update = function(show) {
-		// For some reason this differs from self.width; textOffset gives correct results...
-		textOffset = ctx.measureText(self.text).width;
-		
+	self.Update = function(show) {		
 		// If the square is not being masked and there is a click event to process...
 		if (show && clicked && !self.isHint) {
 			if (!self.dragged) {
@@ -230,11 +227,20 @@ function Slider(x, y, length, dimension) {
 	addAsset("yay" + (dimension+1).toString(), "./play/img/yay_pentagon.png");
 
 	self.Update = function(show) {
-		self.piece.Update(true);
+		var p = self.piece;
+		p.Update(true);
+		var dx = Math.abs(p.gotoX - p.x);
+		var dy = Math.abs(p.gotoY - p.y);
+		if (dx > 1 || dy > 1 || p.dangle != 0)
+			engine.puzzle.refresh[dimension][0] = true;
 		if (self.piece.x < self.x)
 			self.piece.x = self.x;
 		if (self.piece.x > self.x + length)
 			self.piece.x = self.x + length;
+		if (self.piece.gotoX < self.x)
+			self.piece.gotoX = self.x;
+		if (self.piece.gotoX > self.x + length)
+			self.piece.gotoX = self.x + length;
 		var oldPercentage = self.percentage;
 		self.percentage = (self.piece.x - self.x) / length;
 		if (self.percentage != oldPercentage) {

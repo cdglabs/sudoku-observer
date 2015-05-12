@@ -22,9 +22,9 @@
 	<link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
 
-<body style="height: 3500px; width: 7000px" onload="init()" onmousedown="transNearest(event)" onkeydown="transKey(event)">	
-	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 6500px; height: 275px">
-		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 6500px; height: 275px"></iframe>
+<body style="height: 3500px; width: 6750px" onload="init()" onmousedown="transNearest(event)" onkeydown="transKey(event)">	
+	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 5800px; height: 275px">
+		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 275px"></iframe>
 	</div>
 	
 	<div class="chapter" id="titleDiv" style="position: absolute; left: 3000px; top: 300px; width: 1000px; height: 550px">	
@@ -143,6 +143,17 @@
 			onmouseover="document.getElementById('hard').focus()"
 			onmouseout="document.getElementById('hard').blur()"
 			onclick="document.getElementById('hard').focus()"></iframe>
+	</div>
+	
+	<div class="chapter" id="rulesDiv" style="position: absolute; left: 1800px; top: 300px; width: 1000px; height: 600px">
+		<p>
+			How to play: Fill in all empty cells with the 9 symbols, so that they don't appear more than once in each row, column and inside 3x3 block. 
+		</p>
+		
+		<iframe id="rules" src="rules.html" scrolling="no" style="width: 1000px; height: 550px"
+			onmouseover="document.getElementById('rules').focus()"
+			onmouseout="document.getElementById('rules').blur()"
+			onclick="document.getElementById('rules').focus()"></iframe>
 	</div>
 	
 	<div id="jurors" style="position: absolute; left: 4525px; top: 1600px; width: 375px; padding: 10px; text-align: justify">
@@ -359,6 +370,44 @@ Only when all of these strategies have been exhausted do we resort to backtracki
 		</p>
 	</div>
 	</div>
+	
+<div id="attributions" style="position: absolute; left: 6200px; top: 100px; width: 325px; padding: 10px; text-align: center; font-size: 30px">
+<p>
+Miscellaneous Stuff<br><br>
+This playable page is by <a href="mailto:su-sa@live.com">Elijah Agbayani</a> with guidance from <a href="http://hesam.us/">Hesam Samimi</a> 
+and valuable feedback from <a href="http://www.evelyneastmond.com/">Evelyn Eastmond,</a> both of <a href="http://cdglabs.org/">CDG Labs.</a>
+It's inspired in part by the <a href="http://ncase.me/polygons/">Parable of The Polygons</a>, created by Vi Hart and Nicky Case, from whom we <s>stole</s> adapted the draggable pieces (and the cute shapes too), 
+and in part by my good friend Ryan Kumala, who gave me the idea for a newspaper layout.<br><br>
+</p>
+<p>
+References/Related Info by Article<br><br>
+<hr>
+Algorithm To Solve Any Sudoku Puzzle<br><br>
+<a href="http://www.afjarvis.staff.shef.ac.uk/sudoku/sudoku.pdf">Proof</a> on the number of solutions<br><br>
+<a href="https://attractivechaos.github.io/plb/kudoku.html">Kudoku</a> and its <a href="https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/">performance</a><br><br>
+More advanced <a href="http://sudoku.com.au/sudokutips.aspx?Go=H3-1-1995">sudoku strategies</a><br><br>
+<hr>
+The Minimum Sudoku<br><br>
+<a href="http://www.math.ie/McGuire_V1.pdf">Proof</a> that 9x9 puzzles must have at least 17 clues to have a unique solution<br><br>
+<a href="http://sandwalk.blogspot.com/2007/06/i-knew-it-there-can-be-more-than-one.html">Example</a> of a puzzle with multiple solutions<br><br>
+<hr>
+Odds And Evens<br><br>
+<a href="http://www.jstor.org/stable/10.5406/amerjpsyc.124.3.0313">Original paper</a> (abstract only)<br><br>
+<hr>
+The Most Difficult Sudoku<br><br>
+Text adapted from this <a href="http://www.telegraph.co.uk/news/science/science-news/9359579/Worlds-hardest-sudoku-can-you-crack-it.html">article</a> from <i>The Telegraph</i><br><br>
+<a href="http://www.theguardian.com/media/2010/aug/22/worlds-hardest-sudoku">Previously the hardest puzzle</a><br><br>
+<hr>
+The "Sudoku Effect"<br><br>
+<a href="http://link.springer.com/chapter/10.1007/978-3-319-04087-5_6">Original paper</a> (abstract only)<br><br>
+Short <a href="http://ec.europa.eu/education/tools/ects_en.htm">background</a> on the ECTS credit system
+<hr>
+Sudoku As A verification Code<br><br>
+<a href="http://ieeexplore.ieee.org/xpl/login.jsp?reload=true&tp=&arnumber=5337415&url=http%3A%2F%2Fieeexplore.ieee.org%2Fstamp%2Fstamp.jsp%3Ftp%3D%26arnumber%3D5337415">Original paper</a> (abstract only)<br><br>
+<hr>
+Jurors Caught Playing Sudoku During Trial<br><br>
+Text adapted from this <a href="http://www.smh.com.au/news/national/jurors-get-1-million-trial-aborted/2008/06/10/1212863636766.html">article</a> from <i>The Sydney Morning Herald</i><br><br>
+</div>
 	
 	<div id="topRect" class="blur"></div>
 	<div id="botRect" class="blur"></div>

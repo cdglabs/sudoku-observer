@@ -29,12 +29,12 @@ function startScroll(x, y) {
 	// Rein in out-of-bounds coordinates
 	if (endX < 0)
 		endX = 0;
-	if (endX > window.scrollMaxX)
-		endX = window.scrollMaxX;
+	if (endX > document.documentElement.scrollWidth - document.documentElement.clientWidth)
+		endX = document.documentElement.scrollWidth - document.documentElement.clientWidth;
 	if (endY < 0)
 		endY = 0;
-	if (endY > window.scrollMaxY)
-		endY = window.scrollMaxY;
+	if (endY > document.documentElement.scrollHeight - document.documentElement.clientHeight)
+		endY = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 	distX = endX - startX;
 	distY = endY - startY;
 	
@@ -115,4 +115,6 @@ function pageScroll() {
 	
 	if (Math.sqrt(VX * VX + VY * VY) < .1)
 		inMotion = false;
+	else
+		console.log(window.scrollX - endX, window.scrollY - endY);
 }
