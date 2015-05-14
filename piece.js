@@ -53,7 +53,7 @@ function Piece(num, isHint, x, y) {
 		if (show && clicked && !self.isHint) {
 			if (!self.dragged) {
 				// Make sure nothing else is already being dragged
-		        if (!engine.pieceDragged) {
+		        if (!engine.pieceDragged && engine.blur.fade == 0) {
 					var square = self.isSliding ? engine.GetSliding(Mouse.x, Mouse.y) : engine.GetSquare(Mouse.x, Mouse.y);
 					var pool = self.inPuzzle ? undefined : engine.GetPool(Mouse.x, Mouse.y);
 					if(((square != undefined && square.piece == self)

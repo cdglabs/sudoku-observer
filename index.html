@@ -20,6 +20,7 @@
   	})();
   	</script>
 	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<link href="favicon.png" rel="icon" type="image/png">
 </head>
 
 <body style="height: 3500px; width: 6750px" onload="init()" onmousedown="transNearest(event)" onkeydown="transKey(event)">	
@@ -27,8 +28,13 @@
 		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 275px"></iframe>
 	</div>
 	
-	<div class="chapter" id="titleDiv" style="position: absolute; left: 3000px; top: 300px; width: 1000px; height: 550px">	
-		<iframe id="title" src="title.html" scrolling="no" style="margin-top: 50px; width: 1000px; height: 550px"
+	<div class="chapter" id="titleDiv" style="position: absolute; left: 3000px; top: 300px; width: 1000px; height: 600px">
+		<p style="font-weight: bold">
+			Today's (Optional) Daily Puzzle<br>
+			Main Story Below
+		</p>
+		
+		<iframe id="title" src="title.html" scrolling="no" style="width: 1000px; height: 550px"
 			onmouseover="document.getElementById('title').focus()"
 			onmouseout="document.getElementById('title').blur()"
 			onclick="document.getElementById('title').focus()"></iframe>

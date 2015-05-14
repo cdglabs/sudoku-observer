@@ -64,6 +64,14 @@ function getMessage(divID) {
 function getBlurt(msgID, curMsg) {
 	if (msgID == "introMsg")
 		return "Hover the mouse over me to see what I have to say!";
+	else if (msgID == "magicDiv")
+		return "Navigate right to continue to the next section.";
+	else if (msgID == "latinDiv")
+		return "Navigate up to continue to the next section.";
+	else if (msgID == "4x4Div")
+		return "Navigate right to continue to the next section.";
+	else if (msgID == "tutDiv")
+		return "Nagivate down to continue to the next section.";
 	else
 		return curMsg;
 }
@@ -105,7 +113,7 @@ function Piece(x, y) {
 			self.blink--;
 		if (self.visible == 0)
 			self.blurting = false;
-		if (inMotion)
+		if (inMotion && !(self.blurting && self.text == "Hover the mouse over me to see what I have to say!"))
 			self.visible = 0;
 		if (!self.dragged)
 			self.dying = 0;
@@ -163,7 +171,7 @@ function Piece(x, y) {
 		else {
 			if (self.blinking && Math.random() < .1)
 				self.blink = blinkDuration;
-			if (speech.visible > (persistDuration + fadeDuration) * .9)
+			if (speech.visible > (persistDuration + fadeDuration) * .9 && !speech.blurting)
 				self.image = images["blinktriangle"];
 			else
 				self.image = images["yaytriangle"];

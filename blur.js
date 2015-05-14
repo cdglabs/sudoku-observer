@@ -14,6 +14,7 @@
 ---------------------------------------
  */
 var topRect, botRect, leftRect, rightRect;
+var blurRule; // CSS rule for the above rectangles
 
 // Manipulates the rectangles so that they box in the element whose upper-left
 // corner is at (left, top) and has dimensions width x height.
@@ -39,21 +40,31 @@ function viewRect(left, top, width, height) {
 	rightRect.style.top = top.toString() + 'px';
 }
 
-function transOpacity(level) {
-	if (!document.styleSheets) {
-		setTimeout(function() { transOpacity(level); }, 1000);
+// Switches the visibility of the gray rectangles (transition effect)
+function toggleOpacity(visible) {
+	if (blurRule) {
+		blurRule.style.opacity = visible ? "1" : "0";
 		return;
 	}
-	var i;
-	for (i = 0; i < document.styleSheets.length; i++)
-		if (!document.styleSheets[i].cssRules || document.styleSheets[i].cssRules.length < 6)
-			continue;
-		else
-			break;
-	if (i != document.styleSheets.length) {
-		var ss = document.styleSheets[i];
-		ss.cssRules[6].style.opacity = level;
-	}
+	
+	// Find and save the blur rule
+	if (document.styleSheets)
+		for (var i = 0; i < document.styleSheets.length; i++)
+			try {
+				if (document.styleSheets[i].cssRules)
+					for (var j = 0; j < document.styleSheets[i].cssRules.length; j++)
+						if (document.styleSheets[i].cssRules[j].selectorText == '.blur') {
+							blurRule = document.styleSheets[i].cssRules[j];
+							toggleOpacity(visible);
+						}
+			} catch(e) {
+				if (e.name != 'SecurityError')
+					throw e;
+				continue;
+			}
+			
+	if (!blurRule)
+		setTimeout(function() { toggleOpacity(visible); }, 1000);
 }
 
 var destX;
@@ -63,7 +74,7 @@ var divMap = {};
 var iframes = [];
 
 function transRect(left, top, width, height, willScroll) {
-	transOpacity('0.0');
+	toggleOpacity(false);
 	destX = left - (window.document.documentElement.clientWidth - width) / 2;
 	destY = top - (window.document.documentElement.clientHeight - height) / 2;
 	if (height > window.document.documentElement.clientHeight)
@@ -75,7 +86,7 @@ function transRect(left, top, width, height, willScroll) {
 	if (willScroll)
 		startScroll(destX, destY);
 	setTimeout(function() { viewRect(left, top, width, height); }, 500);
-	setTimeout(function() { transOpacity('1.0'); }, 1000);
+	setTimeout(function() { toggleOpacity(true); }, 1000);
 }
 
 function transDiv(name, willScroll) {
@@ -241,6 +252,7 @@ function CheckFrames() {
 	var canvas = document.getElementById('canvas');
 	if (!freeComplete && curDiv == 'freeDiv' && !inMotion) {
 		init_complete();
+		canvas.blurt = true;
 		freeComplete = true;
 	}
 	if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
@@ -248,6 +260,7 @@ function CheckFrames() {
 		registerName('freeDiv', 'tutDiv', '', '', 'magicDiv');
 		transDiv('tutDiv', false);
 		canvas.setBlinking = true;
+		canvas.blurt = true;
 		tutComplete = true;
 	}
 	else if (!fourComplete && iframes[3].contentWindow.IS_COMPLETE) {
@@ -255,6 +268,7 @@ function CheckFrames() {
 		registerName('tutDiv', 'headerDiv', '', '', '4x4Div');
 		transDiv('4x4Div', false);
 		canvas.setBlinking = true;
+		canvas.blurt = true;
 		fourComplete = true;
 	}
 	else if (!latinComplete && iframes[2].contentWindow.IS_COMPLETE) {
@@ -262,6 +276,7 @@ function CheckFrames() {
 		registerName('4x4Div', 'titleDiv', '', 'latinDiv', '');
 		transDiv('latinDiv', false);
 		canvas.setBlinking = true;
+		canvas.blurt = true;
 		latinComplete = true;
 	}
 	else if (!magicComplete && iframes[1].contentWindow.IS_COMPLETE) {
@@ -269,6 +284,7 @@ function CheckFrames() {
 		registerName('latinDiv', 'titleDiv', '', '', 'magicDiv');
 		transDiv('magicDiv', false);
 		canvas.setBlinking = true;
+		canvas.blurt = true;
 		magicComplete = true;
 	}
 	

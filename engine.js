@@ -389,6 +389,8 @@ function Engine(dimension, tileSize, mode, x, y) {
 			window.ARROW_EVENT = event;
 			return;
 		}
+		if (self.blur.fade > 0)
+			return;
 		
 		var index = event.charCode - 49;
 		if (((index < 0 || index >= dimension) && index != 65) || engine.pieceDragged ||
@@ -477,6 +479,9 @@ function Engine(dimension, tileSize, mode, x, y) {
 	
 	// Fill in the board with a known solution
 	self.SetSolution = function() {
+		if (self.blur.fade > 0)
+			return;
+		
 		if (mode == "sudoku") {
 			if (self.puzzle.solution == 0 || self.puzzle.solution === undefined ||
 					self.puzzle.solved || self.blurPhase != 0)
