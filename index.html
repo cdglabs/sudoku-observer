@@ -24,8 +24,8 @@
 </head>
 
 <body style="height: 3500px; width: 6750px" onload="init()" onmousedown="transNearest(event)" onkeydown="transKey(event)">	
-	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 5800px; height: 275px">
-		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 275px"></iframe>
+	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 5800px; height: 300px">
+		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 300px"></iframe>
 	</div>
 	
 	<div class="chapter" id="titleDiv" style="position: absolute; left: 3000px; top: 300px; width: 1000px; height: 600px">
@@ -161,6 +161,10 @@
 			onmouseout="document.getElementById('rules').blur()"
 			onclick="document.getElementById('rules').focus()"></iframe>
 	</div>
+	
+	<img id="creation" src="creation.png" style="position: absolute; left: 1000px; top: 1200px"></img>
+	<img id="garfield" src="garfield.png" style="position: absolute; left: 4750px; top: 500px"></img>
+	<img id="geometry" src="geometry.png" style="position: absolute; left: 3925px;  top: 2300px"></img>
 	
 	<div id="jurors" style="position: absolute; left: 4525px; top: 1600px; width: 375px; padding: 10px; text-align: justify">
 		<p style="font-size: 30px">Jurors Caught Playing Sudoku During Trial</p>
@@ -419,8 +423,8 @@ Text adapted from this <a href="http://www.smh.com.au/news/national/jurors-get-1
 	<div id="botRect" class="blur"></div>
 	<div id="leftRect" class="blur"></div>
 	<div id="rightRect" class="blur"></div>
-	<div id="images"></div>
 	<canvas id="canvas"><script src="./js/Mouse.js"></script></canvas>
+	<div id="images"></div>
 
 	<script src="topengine.js"></script>
 </body>

@@ -101,6 +101,7 @@ function transDiv(name, willScroll) {
 		else
 			iframes[i].contentWindow.IS_IN_SIGHT = true;
 	curDiv = name;
+	divMap[name].visited = true;
 }
 
 function registerDiv(name, left, top, width, height, north, east, south, west) {
@@ -114,15 +115,14 @@ function registerDiv(name, left, top, width, height, north, east, south, west) {
 	divMap[name].width = width;
 	divMap[name].height = height;
 	
-	divMap[name].arrowL = false;
-	divMap[name].arrowD = false;
-	divMap[name].arrowU = false;
-	divMap[name].arrowR = false;
-	
 	divMap[name].north = north;
 	divMap[name].east = east;
 	divMap[name].south = south;
 	divMap[name].west = west;
+	
+	if (!divMap[name].visited)
+		divMap[name].visited = false;
+	
 	delete divMap[''];
 }
 
@@ -135,7 +135,7 @@ function registerName(name, north, east, south, west) {
 function genArrows(name) {
 	if (divMap[name] === undefined || divMap[name] == '')
 		return;
-	var size = 32;
+	var size = 48;
 	var margin = 8;
 	var clientWidth = window.document.documentElement.clientWidth;
 	var clientHeight = window.document.documentElement.clientHeight;
@@ -144,70 +144,72 @@ function genArrows(name) {
 	for (var i = 0; i < 4; i++)
 		images[i] = document.createElement("img");
 	
-	images[0].src = "./img/arrow-left.png";
 	images[0].id = "arrowL";
 	images[0].style.left = margin.toString() + 'px';
 	images[0].style.top = ((clientHeight - size) / 2).toString() + 'px';
 	
-	images[1].src = "./img/arrow-down.png";
 	images[1].id = "arrowD";
 	images[1].style.left = ((clientWidth - size) / 2).toString() + 'px';
 	images[1].style.top = (clientHeight - size - margin).toString() + 'px';
 	
-	images[2].src = "./img/arrow-up.png";
 	images[2].id = "arrowU";
 	images[2].style.left = ((clientWidth - size) / 2).toString() + 'px';
 	images[2].style.top = margin.toString() + 'px';
 	
-	images[3].src = "./img/arrow-right.png";
 	images[3].id = "arrowR";
 	images[3].style.left = (clientWidth - size - margin).toString() + 'px';
 	images[3].style.top = ((clientHeight - size) / 2).toString() + 'px';
 	
 	var src = document.getElementById("images");
 	for (var i = 0; i < 4; i++) {
-		images[i].style.width = size.toString() + 'px';
-		images[i].style.height = size.toString() + 'px';
-		images[i].style.position = 'fixed';
-		images[i].attributes.class = "navigator";
-		images[i].className = "navigator";
-		images[i].name = name;
+		var img = images[i];
+		img.style.width = size.toString() + 'px';
+		img.style.height = size.toString() + 'px';
+		img.style.position = 'fixed';
+		img.name = name;
 		switch (i) {
 		case 0:
 			var idl = divMap[name].west;
-			if (!(idl === undefined || idl == '' || divMap[name].arrowL)) {
-				images[i].onmousedown = function() {
+			if (!(idl === undefined || idl == '')) {
+				img.onmousedown = function() {
 					transDiv(idl, true);
 				};
-				src.appendChild(images[i]);
+				img.src = divMap[idl].visited ? "./img/arrow-left.png" : "./img/new-left.png";
+				img.className = divMap[idl].visited ? "navigator" : "navigator-fresh";
+				src.appendChild(img);
 			}
 			break;
 		case 1:
 			var idd = divMap[name].south;
-			if (!(idd === undefined || idd == '' || divMap[name].arrowD)) {
-				images[i].onmousedown = function() {
+			if (!(idd === undefined || idd == '')) {
+				img.onmousedown = function() {
 					transDiv(idd, true);
 				};
-				src.appendChild(images[i]);
+				img.src = divMap[idd].visited ? "./img/arrow-down.png" : "./img/new-down.png";
+				img.className = divMap[idd].visited ? "navigator" : "navigator-fresh";
+				src.appendChild(img);
 			}
 			break;
 		case 2:
 			var idu = divMap[name].north;
-			if (!(idu === undefined || idu == '' || divMap[name].arrowU)) {
-
-				images[i].onmousedown = function() {
+			if (!(idu === undefined || idu == '')) {
+				img.onmousedown = function() {
 					transDiv(idu, true);
 				};
-				src.appendChild(images[i]);
+				img.src = divMap[idu].visited ? "./img/arrow-up.png" : "./img/new-up.png";
+				img.className = divMap[idu].visited ? "navigator" : "navigator-fresh";
+				src.appendChild(img);
 			}
 			break;
 		case 3:
 			var idr = divMap[name].east;
-			if (!(idr === undefined || idr == '' || divMap[name].arrowR)) {
-				images[i].onmousedown = function() {
+			if (!(idr === undefined || idr == '')) {
+				img.onmousedown = function() {
 					transDiv(idr, true);
 				};
-				src.appendChild(images[i]);
+				img.src = divMap[idr].visited ? "./img/arrow-right.png" : "./img/new-right.png";
+				img.className = divMap[idr].visited ? "navigator" : "navigator-fresh";
+				src.appendChild(img);
 			}
 			break;
 		}
@@ -251,7 +253,7 @@ var SY = window.scrollY;
 function CheckFrames() {
 	var canvas = document.getElementById('canvas');
 	if (!freeComplete && curDiv == 'freeDiv' && !inMotion) {
-		init_complete();
+		init_complete(false);
 		canvas.blurt = true;
 		freeComplete = true;
 	}
@@ -300,6 +302,11 @@ function CheckFrames() {
 			}
 		}
 	}
+	if (!freeComplete && document.getElementById('header').contentWindow.UNLOCKED) {
+		init_complete(true);
+		canvas.blurt = true;
+		freeComplete = true;
+	}
 	
 	var best = 0;
 	var threshhold = 0;
@@ -321,7 +328,8 @@ function CheckFrames() {
 			}
 		}
 	}
-	if (bestDiv != curDiv && bestDiv != '' && best > threshhold)
+	if (curDiv != bestDiv && curDiv != 'creation' && curDiv != 'garfield' && curDiv != 'geometry'
+		&& curDiv != 'quote' && bestDiv != '' && best > threshhold)
 		transDiv(bestDiv, false);
 	
 	var shapeySize = Math.floor(window.document.documentElement.clientHeight / 2);
@@ -377,30 +385,34 @@ function init() {
 	CheckFrames();
 }
 
-function init_complete() {		
+function init_complete(skip) {		
 	registerName('headerDiv', '', 'attributions', 'titleDiv', '');
-	registerName('titleDiv', 'headerDiv', '', '4x4Div', 'rulesDiv');
+	registerName('titleDiv', 'headerDiv', 'garfield', '4x4Div', 'rulesDiv');
 	registerName('rulesDiv', 'headerDiv', 'titleDiv', 'colorDiv', '');
 	registerName('magicDiv', 'hardDiv', 'ode', '', 'oddeven');
 	registerName('latinDiv', '4x4Div', 'jurors', 'effect', 'algorithm');
 	registerName('4x4Div', 'headerDiv', 'clues', 'latinDiv', 'shapesDiv');
-	registerName('tutDiv', 'headerDiv', 'attributions', 'haiku', 'clues');
+	registerName('tutDiv', 'garfield', 'attributions', 'haiku', 'clues');
 	registerName('freeDiv', 'verification', 'attributions', '', 'jurors');
-	registerName('colorDiv', 'rulesDiv', 'shapesDiv', 'hardDiv', 'difficult');
+	registerName('colorDiv', 'rulesDiv', 'shapesDiv', 'hardDiv', 'creation');
 	registerName('shapesDiv', 'rulesDiv', '4x4Div', 'algorithm', 'colorDiv');
-	registerName('hardDiv', 'colorDiv', 'algorithm', 'magicDiv', 'difficult');
+	registerName('hardDiv', 'creation', 'algorithm', 'magicDiv', 'difficult');
 	
 	registerName('jurors', 'clues', 'haiku', '', 'latinDiv');
 	registerName('difficult', 'headerDiv', 'hardDiv', 'oddeven', '');
-	registerName('clues', 'headerDiv', 'tutDiv', 'jurors', '4x4Div');
+	registerName('clues', 'garfield', 'tutDiv', 'jurors', '4x4Div');
 	registerName('verification', 'haiku' ,'attributions', 'freeDiv', 'jurors');
 	registerName('ode', 'algorithm', 'effect', '', 'magicDiv');
-	registerName('effect', 'latinDiv', 'quote', '', 'ode');
-	registerName('quote', 'latinDiv', 'jurors', '', 'effect');
+	registerName('effect', 'latinDiv', 'geometry', '', 'ode');
+	registerName('quote', 'geometry', 'jurors', '', 'effect');
 	registerName('oddeven', 'difficult', 'magicDiv', '', '');
 	registerName('haiku', 'tutDiv', 'attributions', 'verification', 'jurors');
 	registerName('algorithm', 'shapesDiv', 'latinDiv', 'ode', 'hardDiv');
 	registerName('attributions', '', '', '', 'headerDiv');
 	
-	transDiv('freeDiv', true);
+	registerName('creation', 'headerDiv', 'colorDiv', 'hardDiv', 'difficult');
+	registerName('garfield', 'headerDiv', 'attributions', 'clues', 'titleDiv');
+	registerName('geometry', 'latinDiv', 'jurors', 'quote', 'effect');
+	
+	transDiv(skip ? 'headerDiv' : 'freeDiv', true);
 }

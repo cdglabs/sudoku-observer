@@ -15,6 +15,13 @@ function shuffleArray(array) {
     return array;
 }
 
+function unhide(divID) {
+    var item = document.getElementById(divID);
+    if (item) {
+      item.className=(item.className=='hidden')?'unhidden':'hidden';
+    }
+ }
+
 var hardPuzzles = [
 	"..............3.85..1.2.......5.7.....4...1...9.......5......73..2.1........4...9",
 	".......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...",
@@ -194,9 +201,22 @@ function Engine(dimension, tileSize, mode, x, y) {
 					var p = self.numPool[a-1].stock[0];
 					self.PlacePiece(p);
 					self.puzzle.squares[i][j].piece = p;
+					p.x = p.gotoX = self.puzzle.squares[i][j].x + (tileSize-p.width)/2;
+					p.y = p.gotoY = self.puzzle.squares[i][j].y + (tileSize+fontHeight)/2;
 					p.isHint = true;
 				}
 			}
+		
+		for (var i = 0; i < dimension; i++) {
+			var pool = self.numPool[i];
+			for (var j = 0; j < pool.stock.length; j++) {
+				var p = pool.stock[j];
+				p.x = p.gotoX = pool.x + (tileSize-p.width)/2;
+				p.y = p.gotoY = pool.y + (tileSize+fontHeight)/2;
+			}
+		}
+		
+		self.Update(true);
 	};
 
 	self.InitializeSlider = function() {
@@ -719,8 +739,9 @@ var throttle = 0;
 		refreshAll = false;
 	}
 	else {
-		if (!refreshAll)
+		/*if (!refreshAll) {
 			ctx.clearRect(0,0,canvas.width,canvas.height);
+		}*/
 		refreshAll = true;
 	}
 })();

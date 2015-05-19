@@ -71,6 +71,15 @@ a.unhidden{ visibility: visible; }
 	opacity: 1.0;
 }
 
+.navigator-fresh{
+	opacity: 0.67;
+	transition: opacity 0.25s;
+}
+
+.navigator-fresh:hover{
+	opacity: 1.0;
+}
+
 iframe {
 	overflow: hidden;
 	border: none;
