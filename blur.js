@@ -243,6 +243,7 @@ var latinComplete = false;
 var fourComplete = false;
 var tutComplete = false;
 var freeComplete = false;
+var toggle = false;
 
 var loadTime = (new Date()).getTime();
 var checkTime = true;
@@ -250,14 +251,24 @@ var checkTime = true;
 var SX = window.scrollX;
 var SY = window.scrollY;
 
+function toggleFull() {
+	document.getElementById('toggle').attributes['src'].nodeValue = freeComplete ?
+			"./img/toggle-full.png" : "./img/toggle-short.png";
+	toggle = true;
+}
+
 function CheckFrames() {
 	var canvas = document.getElementById('canvas');
-	if (!freeComplete && curDiv == 'freeDiv' && !inMotion) {
+	if (freeComplete)
+		;
+	else if (!freeComplete && curDiv == 'freeDiv' && !inMotion) {
 		init_complete(false);
+		document.getElementById('toggle').outerHTML = "";
 		canvas.blurt = true;
 		freeComplete = true;
 	}
-	if (!tutComplete && iframes[4].contentWindow.IS_COMPLETE) {
+	else if (!tutComplete && curDiv == 'tutDiv' &&
+			iframes[4].contentWindow.IS_COMPLETE && !inMotion) {
 		registerName('tutDiv', 'headerDiv', '', 'freeDiv', '4x4Div');
 		registerName('freeDiv', 'tutDiv', '', '', 'magicDiv');
 		transDiv('tutDiv', false);
@@ -265,7 +276,8 @@ function CheckFrames() {
 		canvas.blurt = true;
 		tutComplete = true;
 	}
-	else if (!fourComplete && iframes[3].contentWindow.IS_COMPLETE) {
+	else if (!fourComplete && curDiv == '4x4Div' &&
+			iframes[3].contentWindow.IS_COMPLETE && !inMotion) {
 		registerName('4x4Div', 'titleDiv', 'tutDiv', 'latinDiv', '');
 		registerName('tutDiv', 'headerDiv', '', '', '4x4Div');
 		transDiv('4x4Div', false);
@@ -273,7 +285,8 @@ function CheckFrames() {
 		canvas.blurt = true;
 		fourComplete = true;
 	}
-	else if (!latinComplete && iframes[2].contentWindow.IS_COMPLETE) {
+	else if (!latinComplete && curDiv == 'latinDiv' &&
+			iframes[2].contentWindow.IS_COMPLETE && !inMotion) {
 		registerName('latinDiv', '4x4Div', '', '', 'magicDiv');
 		registerName('4x4Div', 'titleDiv', '', 'latinDiv', '');
 		transDiv('latinDiv', false);
@@ -281,7 +294,8 @@ function CheckFrames() {
 		canvas.blurt = true;
 		latinComplete = true;
 	}
-	else if (!magicComplete && iframes[1].contentWindow.IS_COMPLETE) {
+	else if (!magicComplete && curDiv == 'magicDiv' &&
+			iframes[1].contentWindow.IS_COMPLETE && !inMotion) {
 		registerName('magicDiv', 'titleDiv', 'latinDiv', '', '');
 		registerName('latinDiv', 'titleDiv', '', '', 'magicDiv');
 		transDiv('magicDiv', false);
@@ -302,10 +316,41 @@ function CheckFrames() {
 			}
 		}
 	}
-	if (!freeComplete && document.getElementById('header').contentWindow.UNLOCKED) {
+	if (!freeComplete && toggle) {
 		init_complete(true);
 		canvas.blurt = true;
 		freeComplete = true;
+		toggle = false;
+	}
+	else if (toggle) {
+		divMap = {};
+		
+		registerName('headerDiv', '', 'attributions', 'titleDiv', '');
+		registerName('titleDiv', 'headerDiv', '', 'magicDiv', 'rulesDiv');
+		registerName('rulesDiv', 'headerDiv', 'titleDiv', 'magicDiv', '');
+		registerName('magicDiv', 'titleDiv', '', '', '');
+		registerName('attributions', '', '', '', 'headerDiv');
+		
+		if (magicComplete) {
+			registerName('magicDiv', 'titleDiv', 'latinDiv', '', '');
+			registerName('latinDiv', 'titleDiv', '', '', 'magicDiv');
+		}
+		if (latinComplete) {
+			registerName('latinDiv', '4x4Div', '', '', 'magicDiv');
+			registerName('4x4Div', 'titleDiv', '', 'latinDiv', '');
+		}
+		if (fourComplete) {
+			registerName('4x4Div', 'titleDiv', 'tutDiv', 'latinDiv', '');
+			registerName('tutDiv', 'headerDiv', '', '', '4x4Div');
+		}
+		if (tutComplete) {
+			registerName('tutDiv', 'headerDiv', '', 'freeDiv', '4x4Div');
+			registerName('freeDiv', 'tutDiv', '', '', 'magicDiv');
+		}
+		
+		transDiv('headerDiv', true);
+		freeComplete = false;
+		toggle = false;
 	}
 	
 	var best = 0;

@@ -24,8 +24,8 @@
 </head>
 
 <body style="height: 3500px; width: 6750px" onload="init()" onmousedown="transNearest(event)" onkeydown="transKey(event)">	
-	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 5800px; height: 300px">
-		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 300px"></iframe>
+	<div class="chapter" id="headerDiv" style="position: absolute; left: 250px; top: 0px; width: 5800px; height: 275px">
+		<iframe id="header" src="./temp/index.html" scrolling="no" style="width: 5800px; height: 275px"></iframe>
 	</div>
 	
 	<div class="chapter" id="titleDiv" style="position: absolute; left: 3000px; top: 300px; width: 1000px; height: 600px">
@@ -425,6 +425,7 @@ Text adapted from this <a href="http://www.smh.com.au/news/national/jurors-get-1
 	<div id="rightRect" class="blur"></div>
 	<canvas id="canvas"><script src="./js/Mouse.js"></script></canvas>
 	<div id="images"></div>
+	<img id="toggle" class="navigator" style="position: absolute; left: 3550px; top: 0px" onclick="toggleFull()" src="img/toggle-full.png"></img>
 
 	<script src="topengine.js"></script>
 </body>
